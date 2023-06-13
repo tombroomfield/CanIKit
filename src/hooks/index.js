@@ -1,7 +1,7 @@
 import { canI } from "./canI";
 import { searchForPolicies } from "./policySearch";
 
-export function hook({
+export function handle({
   pagePolicies,
   pageSevers,
   layoutPolicies,

@@ -1,8 +1,7 @@
-import { hook } from './hooks'
+import { handle } from "./hooks";
 
 const CanIKit = {
-  hook,
-}
+  handle,
+};
 
-
-export default CanIKit
+export default CanIKit;

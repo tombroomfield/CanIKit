@@ -55,3 +55,37 @@ export const handle = sequence(
   })
 );
 ```
+
+## Usage
+
+Once setup, you will likely start getting some errors when you try to load your pages. This is because on every server-side load event, CanIKit will check to ensure that the `canI` method is called. Let's see an example of how we can do that.
+
+```typescript
+// +page.server.js
+export async function load({ request, locals: { canI } }) {
+  const user = ... // Find the user based on the request
+  await canI({ user });
+
+
+  // ... other code
+}
+```
+
+In it's most basic form, the `canI` function can be passed a user object. This user object will be passed to the policy file for the page, layout, or API route. Let's see an example of a policy file for a page.
+
+In the same directory as the `+page.server.js|ts` file, create a `page.policy.js|ts` file.
+
+This very simply policy just checks to ensure that we have a signed in user, otherwise the authorization will fail.
+
+```typescript
+// page.policy.ts
+import { CanIKitPolicy } from "canikit";
+export default class Policy extends CanIKit {
+  async view() {
+    // We have access to this user object through this.user
+    if (!this.user) return false;
+
+    return true;
+  }
+}
+```

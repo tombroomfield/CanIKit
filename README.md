@@ -71,11 +71,11 @@ export async function load({ request, locals: { canI } }) {
 }
 ```
 
-In it's most basic form, the `canI` function can be passed a user object. This user object will be passed to the policy file for the page, layout, or API route. Let's see an example of a policy file for a page.
+In it's most basic form, the `canI` function can be passed a user object. The user will be passed to the policy for the page, layout, or API route. Let's see an example of a policy file for a page:
 
 In the same directory as the `+page.server.js|ts` file, create a `page.policy.js|ts` file.
 
-This very simply policy just checks to ensure that we have a signed in user, otherwise the authorization will fail.
+This very simple policy just checks to ensure that we have a signed in user, otherwise the authorization will fail.
 
 ```typescript
 // page.policy.ts

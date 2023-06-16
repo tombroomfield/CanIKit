@@ -89,3 +89,42 @@ export default class Policy extends CanIKit {
   }
 }
 ```
+
+### Authorizing resources
+
+Often, 'who can view this page' is not enough. We often need to authorize the page (or action) against a specific resource. Take this page for example
+
+`./routes/todos/[id]/+page.server.ts`
+
+In this case, we only want to allow the user to view the page if they are the owner of the todo item. We can do this by passing the resource to the `canI` method.
+
+```typescript
+// +page.server.ts
+export async function load({ request, params, locals: { canI } }) {
+  const user = ... // Find the user based on the request
+  const todo = ... // Find the todo based on the params
+  await canI({ user, resource: todo });
+
+  // ... other code
+}
+
+```
+
+Then, inside our policy file:
+
+```typescript
+// page.policy.ts
+import { CanIKitPolicy } from "canikit";
+export default class Policy extends CanIKit {
+  async view() {
+    // We have access to this user object through this.user
+    // We have access to the resource through this.resource
+    if (!this.user) return false;
+
+    // We only want to allow the user to view the page if they are the owner of the todo item
+    if (this.user.id !== this.resource.userId) return false;
+
+    return true;
+  }
+}
+```

@@ -128,3 +128,16 @@ export default class Policy extends CanIKit {
   }
 }
 ```
+
+### Skipping authorization
+
+Sometimes, you may want to skip authorization for a page. For example, you may have a public page that anyone can view. You can do this by calling the skipCanI method.
+
+```typescript
+// +page.server.ts
+export async function load({ request, params, locals: { skipCanI } }) {
+  skipCanI();
+
+  // ... other code
+}
+```

@@ -1,5 +1,5 @@
 {
-  "name": "can-i-kit",
+  "name": "canikit",
   "version": "0.0.1",
   "description": "The missing SvelteKit Authorization library!",
   "main": "index.js",

@@ -129,6 +129,27 @@ export default class Policy extends CanIKit {
 }
 ```
 
+### Authorizing actions
+
+So far, we've only added 'view' actions to our policy. This is the default action that is called when the request is a GET request, such as when loading a page. When we're doing _POST_, _PUT_, OR _DELETE_ requests, the action will be _'create'_, _'update'_, and _'delete'_ respectively.
+
+You can override the default action by passing it as an option to the `canI` method.
+
+```typescript
+// +page.server.ts
+export async function load({ request, params, locals: { canI } }) {
+  const user = ... // Find the user based on the request
+  const todo = ... // Find the todo based on the params
+  await canI({ user, resource: todo, action: "update" });
+
+  // ... other code
+}
+```
+
+#### Custom actions
+
+Feel free to add your own custom actions. For example, you may want to add a 'complete' action to the todo item policy.
+
 ### Skipping authorization
 
 Sometimes, you may want to skip authorization for a page. For example, you may have a public page that anyone can view. You can do this by calling the skipCanI method.

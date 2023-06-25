@@ -162,3 +162,16 @@ export async function load({ request, params, locals: { skipCanI } }) {
   // ... other code
 }
 ```
+
+### Using policies outside of the load/get/post/put/delete functions:
+
+Sometimes, you may want to use the policy outside of the load/get/post/put/delete functions. You can do this by importing the policy directly.
+
+```typescript
+import Policy from "./page.policy";
+
+async function someFunction({ user, resource }) {
+  const policy = new Policy({ user, resource });
+  const canView = await policy.view();
+}
+```

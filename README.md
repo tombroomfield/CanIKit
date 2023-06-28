@@ -164,12 +164,12 @@ There are a few rules to keep in when designing your policies:
 layout.policy.ts
 foos:
 
-> > +layout.server.ts
-> > layout.policy.ts
-> > bars:
-> >
-> > > > +page.server.ts
-> > > > page.policy.ts
+> +layout.server.ts
+> layout.policy.ts
+> bars:
+>
+> > +page.server.ts
+> > page.policy.ts
 
 In this case, when the bars page is rendered, the root layout policy will be called first, then the foos layout policy, then the bars layout policy (if it exists), and finally the bars page policy.
 

@@ -150,6 +150,27 @@ export async function load({ request, params, locals: { canI } }) {
 
 Feel free to add your own custom actions. For example, you may want to add a 'complete' action to the todo item policy.
 
+### Understanding policy load order
+
+There are a few rules to keep in when designing your policies:
+
+- CanIKit expects a policy file to be in the same directory as the server file. For example, if you have a `+page.server.ts` file, CanIKit will look for a `page.policy.ts` file in the same directory. If you have a `+layout.server.ts` file, CanIKit will look for a `layout.policy.ts` file in the same directory and if you have a `+server.ts` file, CanIKit will look for a `policy.ts` file in the same directory.
+
+- You must have a policy file for each server file unless you skip authorization in the server file.
+
+- When you render a page, all of the layout policies which are _ancestors_ to the page will be called first, with the page policy being called last. For example:
+
+- +layout.server.ts
+  layout.policy.ts
+  - +page.server.ts
+    page.policy.ts
+
+In this case, when the page is rendered, the layout policy will be called first, followed by the page policy. If this layout also had a parent layout, that layout's policy would be called first.
+
+**All policies must pass for the page to be rendered.**
+
+**IMPORTANT:** It is strongly recommended that you do not call `canI` from layout files. Always call `canI` from the page or API route file. It's great to add a layout policy to nest specific checks, but calling `canI` from the layout file will open up the risk of accidently skipping authorization in the page file. In this case, there missing authorization error will not be thrown.
+
 ### Skipping authorization
 
 Sometimes, you may want to skip authorization for a page. For example, you may have a public page that anyone can view. You can do this by calling the skipCanI method.

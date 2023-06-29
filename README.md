@@ -158,7 +158,9 @@ There are a few rules to keep in when designing your policies:
 
 - You must have a policy file for each server file unless you skip authorization in the server file.
 
-- When you render a page, all of the layout policies which are _ancestors_ to the page will be called first, with the page policy being called last. For example:
+- When you render a page, all of the layout policies which are _ancestors_ to the page will be called first, with the page policy being called last.
+
+For example:
 
 ![Policy load order](./docs/images/load_order.png)
 

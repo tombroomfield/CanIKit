@@ -160,16 +160,7 @@ There are a few rules to keep in when designing your policies:
 
 - When you render a page, all of the layout policies which are _ancestors_ to the page will be called first, with the page policy being called last. For example:
 
-+layout.server.ts
-layout.policy.ts
-foos:
-
-> +layout.server.ts
-> layout.policy.ts
-> bars:
->
-> > +page.server.ts
-> > page.policy.ts
+![Policy load order](./docs/images/load_order.png)
 
 In this case, when the bars page is rendered, the root layout policy will be called first, then the foos layout policy, then the bars layout policy (if it exists), and finally the bars page policy.
 

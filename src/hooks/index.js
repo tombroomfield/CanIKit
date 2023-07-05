@@ -32,6 +32,20 @@ export function handle({
 
     const response = await resolve(event);
 
+    const loadRoute = Object.keys(event).includes("isDataRequest");
+    const dataLoadRoute = loadRoute && event.isDataRequest;
+
+    const apiRoute =
+      !!(
+        apiServers &&
+        (apiServers[`./routes${event.route.id}/+server.ts`] ||
+          apiServers[`./routes${event.route.id}/+server.js`])
+      ) && !dataLoadRoute;
+
+    if (!ranIt && (dataLoadRoute || apiRoute)) {
+      throw new Error(`Policy not ran for this route: ${event.route.id}`);
+    }
+
     return response;
   };
 }

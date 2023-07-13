@@ -1,11 +1,22 @@
 import { crudMap } from "../utils";
 
 export function canI({ policies, event }, wasRun) {
-  return async ({ user, resource, action }) => {
+  return async ({ user, resource, action, policy }) => {
     // This is a +server or +page.server, and it has skipCanI set.
     if (policies === true) {
       wasRun();
       return;
+    }
+
+    if (policy) {
+      policies = [
+        [
+          policy.name,
+          async () => {
+            return { default: policy };
+          },
+        ],
+      ];
     }
 
     for (let [key, policyFunc] of policies) {

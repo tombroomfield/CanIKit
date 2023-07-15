@@ -183,6 +183,23 @@ export async function load({ request, params, locals: { skipCanI } }) {
 }
 ```
 
+### Using custom policies
+
+You can pass a different policy to the `canI` method if you want to use a custom or different policy. For example, you may want to use a different policy for a specific page.
+
+```typescript
+const MyOtherPolicy = ... // Import your custom policy
+export async function load({ request, params, locals: { canI } }) {
+  const user = ... // Find the user based on the request
+  const todo = ... // Find the todo based on the params
+  await canI({ user, resource: todo, policy: MyOtherPolicy });
+
+  // ... other code
+}
+```
+
+**Note:** Ancestor layout policies will still be called before the custom policy.
+
 ### Using policies outside of the load/get/post/put/delete functions:
 
 Sometimes, you may want to use the policy outside of the load/get/post/put/delete functions. You can do this by importing the policy directly.

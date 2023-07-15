@@ -9,7 +9,11 @@ export function canI({ policies, event }, wasRun) {
     }
 
     if (policy) {
+      const filteredToRemovePages = policies.filter((p) =>
+        p[0].includes("layout.policy")
+      );
       policies = [
+        ...filteredToRemovePages,
         [
           policy.name,
           async () => {

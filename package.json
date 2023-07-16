@@ -1,8 +1,8 @@
 {
   "name": "canikit",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "The missing SvelteKit Authorization library!",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

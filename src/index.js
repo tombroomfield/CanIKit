@@ -1,4 +1,4 @@
-import CanIKitPolicy from "./policies/policy";
+import CanIKitPolicy from "./policies/policy.js";
 import { handle } from "./hooks";
 
 const CanIKit = {

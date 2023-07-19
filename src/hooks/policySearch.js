@@ -1,4 +1,4 @@
-import { filterKeysByRegex, directoryLookup } from "../utils.js";
+import { filterKeysByRegex, directoryLookup } from "../utils/index.js";
 
 export function searchForPolicies({
   path,

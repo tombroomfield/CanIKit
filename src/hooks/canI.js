@@ -1,4 +1,4 @@
-import { crudMap } from "../utils.js";
+import { crudMap } from "../utils/index.js";
 
 export function canI({ policies, event }, wasRun) {
   return async ({ user, resource, action, policy }) => {

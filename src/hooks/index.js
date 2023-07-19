@@ -1,5 +1,5 @@
-import { canI } from "./canI";
-import { searchForPolicies } from "./policySearch";
+import { canI } from "./canI.js";
+import { searchForPolicies } from "./policySearch.js";
 
 export function handle({
   pagePolicies,

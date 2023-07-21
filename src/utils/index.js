@@ -1,5 +1,5 @@
-import { directoryLookup } from "./directoryLookup";
-import { filterKeysByRegex } from "./filterKeysByRegex";
-import { crudMap } from "./crudMap";
+import { directoryLookup } from "./directoryLookup.js";
+import { filterKeysByRegex } from "./filterKeysByRegex.js";
+import { crudMap } from "./crudMap.js";
 
 export { directoryLookup, filterKeysByRegex, crudMap };

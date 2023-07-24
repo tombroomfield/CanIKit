@@ -1,4 +1,4 @@
-import { filterKeysByRegex } from ".";
+import { filterKeysByRegex } from "./index";
 export function directoryLookup(
   path,
   fileReg,

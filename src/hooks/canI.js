@@ -1,4 +1,5 @@
 import { crudMap } from "../utils/index.js";
+import { replaceWithCustomPolicy } from "../utils/policyReplacer.js";
 
 export function canI({ policies, event }, wasRun) {
   return async ({ user, resource, action, policy }) => {
@@ -9,18 +10,7 @@ export function canI({ policies, event }, wasRun) {
     }
 
     if (policy) {
-      const filteredToRemovePages = policies.filter((p) =>
-        p[0].includes("layout.policy")
-      );
-      policies = [
-        ...filteredToRemovePages,
-        [
-          policy.name,
-          async () => {
-            return { default: policy };
-          },
-        ],
-      ];
+      policies = replaceWithCustomPolicy(policies, policy);
     }
 
     for (let [key, policyFunc] of policies) {

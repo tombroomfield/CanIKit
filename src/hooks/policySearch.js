@@ -10,46 +10,20 @@ export function searchForPolicies({
   apiPolicies,
   i = 0,
 }) {
-  path = path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  path = scrubPath(path);
+
   let pagePolicyComponent;
 
-  const pageSerRegex = new RegExp(
-    `^\\.\\/routes${path}\/\\+(page)\\.server\\.(js|ts)\\b`
-  );
-  const pageServerComponent = Object.values(
-    filterKeysByRegex(pageSevers, pageSerRegex)
-  )[0];
+  const pageServerComponent = findPageServerComponent(path, pageSevers);
 
   // We have a page server, so we must have a page policy.
   if (pageServerComponent) {
-    const policyRegex = new RegExp(
-      `^\\.\\/routes${path}\/page\.policy\\.(js|ts)\\b`
-    );
-    pagePolicyComponent = Object.entries(
-      filterKeysByRegex(pagePolicies, policyRegex)
-    );
-    if (!pagePolicyComponent[0]) {
-      throw new Error(`No page policy found for ${path}`);
-    }
+    pagePolicyComponent = findPagePolicyComponent(path, pagePolicies);
   } else {
-    const serRegex = new RegExp(`^\\.\\/routes${path}\/\\+server\\.(js|ts)\\b`);
-    const serverComponent = Object.values(
-      filterKeysByRegex(apiServers, serRegex)
-    )[0];
+    const serverComponent = findServerComponent(path, apiServers);
     // We have a +server, so we must have a policy.
     if (serverComponent) {
-      if (serverComponent.config?.skipCanI) {
-        return true;
-      }
-      const policyRegex = new RegExp(
-        `^\\.\\/routes${path}\/policy\\.(js|ts)\\b`
-      );
-      pagePolicyComponent = Object.entries(
-        filterKeysByRegex(apiPolicies, policyRegex)
-      );
-      if (!pagePolicyComponent[0]) {
-        throw new Error(`No server policy found for ${path}`);
-      }
+      pagePolicyComponent = findServerPolicy(path, apiPolicies);
     }
   }
 
@@ -90,4 +64,51 @@ export function searchForPolicies({
   );
 
   return [...layoutsToFire, ...pagePolicyComponent];
+}
+
+function scrubPath(path) {
+  return path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function findPageServerComponent(path, pageSevers) {
+  const pageSerRegex = new RegExp(
+    `^\\.\\/routes${path}\/\\+(page)\\.server\\.(js|ts)\\b`
+  );
+  return Object.values(filterKeysByRegex(pageSevers, pageSerRegex))[0];
+}
+
+function findPagePolicyComponent(path, pagePolicies) {
+  const policyRegex = new RegExp(
+    `^\\.\\/routes${path}\/page\.policy\\.(js|ts)\\b`
+  );
+  const component = Object.entries(
+    filterKeysByRegex(pagePolicies, policyRegex)
+  );
+  if (!component[0]) {
+    throw new Error(`No page policy found for ${path}`);
+  }
+
+  return component;
+}
+
+function findServerComponent(path, apiServers) {
+  const serRegex = new RegExp(`^\\.\\/routes${path}\/\\+server\\.(js|ts)\\b`);
+  const serverComponent = Object.values(
+    filterKeysByRegex(apiServers, serRegex)
+  )[0];
+
+  return serverComponent;
+}
+
+function findServerPolicy(path, apiPolicies) {
+  const policyRegex = new RegExp(`^\\.\\/routes${path}\/policy\\.(js|ts)\\b`);
+  const policyComponent = Object.entries(
+    filterKeysByRegex(apiPolicies, policyRegex)
+  );
+
+  if (!policyComponent[0]) {
+    throw new Error(`No server policy found for ${path}`);
+  }
+
+  return pagePolicyComponent;
 }

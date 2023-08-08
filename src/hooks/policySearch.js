@@ -34,36 +34,13 @@ export function searchForPolicies({
     layoutServers
   );
 
-  for (let key in ancestorLayoutServers) {
-    // Grab the layout policy for this layout server.
-    key = key.replace("+layout.server", "layout\\.policy");
-    key = key.split(".").slice(0, -1).join(".");
-    const layoutPolicyRegex = new RegExp(`^\\${key}\\.(js|ts)\\b`);
-    const layoutPolicyComponent = Object.values(
-      filterKeysByRegex(layoutPolicies, layoutPolicyRegex)
-    )[0];
+  ensureLayoutServersHavePolicies(ancestorLayoutServers, layoutPolicies);
 
-    if (!layoutPolicyComponent) {
-      throw new Error(
-        `No layout policy found for ${key}, should be ${key
-          .replace("layout.server", "layout.policy")
-          .replace("+", "")}`
-      );
-    }
-  }
-
-  const ancestoryLayoutPolicies = directoryLookup(
-    path,
-    "layout\\.policy",
-    layoutPolicies
+  const ancestoryLayoutPolicies = sortLayoutPolicies(
+    directoryLookup(path, "layout\\.policy", layoutPolicies)
   );
 
-  // Layouts first, shortest path first, then page.
-  const layoutsToFire = Object.entries(ancestoryLayoutPolicies).sort(
-    (a, b) => a[0].length - b[0].length
-  );
-
-  return [...layoutsToFire, ...pagePolicyComponent];
+  return [...ancestoryLayoutPolicies, ...pagePolicyComponent];
 }
 
 function scrubPath(path) {
@@ -111,4 +88,33 @@ function findServerPolicy(path, apiPolicies) {
   }
 
   return pagePolicyComponent;
+}
+
+function ensureLayoutServersHavePolicies(
+  ancestorLayoutServers,
+  layoutPolicies
+) {
+  for (let key in ancestorLayoutServers) {
+    // Grab the layout policy for this layout server.
+    key = key.replace("+layout.server", "layout\\.policy");
+    key = key.split(".").slice(0, -1).join(".");
+    const layoutPolicyRegex = new RegExp(`^\\${key}\\.(js|ts)\\b`);
+    const layoutPolicyComponent = Object.values(
+      filterKeysByRegex(layoutPolicies, layoutPolicyRegex)
+    )[0];
+
+    if (!layoutPolicyComponent) {
+      throw new Error(
+        `No layout policy found for ${key}, should be ${key
+          .replace("layout.server", "layout.policy")
+          .replace("+", "")}`
+      );
+    }
+  }
+}
+
+function sortLayoutPolicies(layoutPolicies) {
+  return Object.entries(layoutPolicies).sort(
+    (a, b) => a[0].length - b[0].length
+  );
 }

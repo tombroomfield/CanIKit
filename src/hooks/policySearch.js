@@ -1,4 +1,9 @@
-import { filterKeysByRegex, directoryLookup } from "../utils/index.js";
+import LayoutManager from "../layouts/manager.js";
+import {
+  filterKeysByRegex,
+  directoryLookup,
+  scrubPath,
+} from "../utils/index.js";
 
 export function searchForPolicies({
   path,
@@ -8,7 +13,6 @@ export function searchForPolicies({
   layoutPolicies,
   apiServers,
   apiPolicies,
-  i = 0,
 }) {
   path = scrubPath(path);
 
@@ -27,24 +31,14 @@ export function searchForPolicies({
     }
   }
 
-  // Grab all the layout servers at or above this level.
-  const ancestorLayoutServers = directoryLookup(
+  const layoutManager = new LayoutManager({
     path,
-    "\\+layout\\.server",
-    layoutServers
-  );
+    layoutServers,
+    layoutPolicies,
+  });
+  layoutManager.ensureServersHavePolicies();
 
-  ensureLayoutServersHavePolicies(ancestorLayoutServers, layoutPolicies);
-
-  const ancestoryLayoutPolicies = sortLayoutPolicies(
-    directoryLookup(path, "layout\\.policy", layoutPolicies)
-  );
-
-  return [...ancestoryLayoutPolicies, ...pagePolicyComponent];
-}
-
-function scrubPath(path) {
-  return path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return [...layoutManager.ancestorPolicies(), ...pagePolicyComponent];
 }
 
 function findPageServerComponent(path, pageSevers) {
@@ -88,33 +82,4 @@ function findServerPolicy(path, apiPolicies) {
   }
 
   return pagePolicyComponent;
-}
-
-function ensureLayoutServersHavePolicies(
-  ancestorLayoutServers,
-  layoutPolicies
-) {
-  for (let key in ancestorLayoutServers) {
-    // Grab the layout policy for this layout server.
-    key = key.replace("+layout.server", "layout\\.policy");
-    key = key.split(".").slice(0, -1).join(".");
-    const layoutPolicyRegex = new RegExp(`^\\${key}\\.(js|ts)\\b`);
-    const layoutPolicyComponent = Object.values(
-      filterKeysByRegex(layoutPolicies, layoutPolicyRegex)
-    )[0];
-
-    if (!layoutPolicyComponent) {
-      throw new Error(
-        `No layout policy found for ${key}, should be ${key
-          .replace("layout.server", "layout.policy")
-          .replace("+", "")}`
-      );
-    }
-  }
-}
-
-function sortLayoutPolicies(layoutPolicies) {
-  return Object.entries(layoutPolicies).sort(
-    (a, b) => a[0].length - b[0].length
-  );
 }

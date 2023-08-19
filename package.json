@@ -1,6 +1,6 @@
 {
   "name": "canikit",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "The missing SvelteKit Authorization library!",
   "main": "src/index.js",
   "type": "module",

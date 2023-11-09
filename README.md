@@ -44,6 +44,7 @@ In the likely event that you are already using a hook, simply utilize the Svelte
 
 ```typescript
 // hooks.server.ts
+import { error } from "@sveltejs/kit";
 import CanIKit from "canikit";
 import { sequence } from "@sveltejs/kit/hooks";
 
@@ -51,14 +52,19 @@ import { sequence } from "@sveltejs/kit/hooks";
 
 export const handle = sequence(
   // ... other hooks,
-  CanIKit.handle({
-    pagePolicies: import.meta.glob("./routes/**/page.policy.*"),
-    pageSevers: import.meta.glob("./routes/**/+page.server.*"),
-    layoutPolicies: import.meta.glob("./routes/**/layout.policy.*"),
-    layoutServers: import.meta.glob("./routes/**/+layout.server.*"),
-    apiServers: import.meta.glob("./routes/**/+server.*"),
-    apiPolicies: import.meta.glob("./routes/**/policy.*"),
-  })
+  CanIKit.handle(
+    {
+      error,
+    },
+    {
+      pagePolicies: import.meta.glob("./routes/**/page.policy.*"),
+      pageSevers: import.meta.glob("./routes/**/+page.server.*"),
+      layoutPolicies: import.meta.glob("./routes/**/layout.policy.*"),
+      layoutServers: import.meta.glob("./routes/**/+layout.server.*"),
+      apiServers: import.meta.glob("./routes/**/+server.*"),
+      apiPolicies: import.meta.glob("./routes/**/policy.*"),
+    }
+  )
 );
 ```
 

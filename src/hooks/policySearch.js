@@ -12,6 +12,7 @@ export function searchForPolicies({
   layoutPolicies,
   apiServers,
   apiPolicies,
+  error,
 }) {
   path = scrubPath(path);
 
@@ -19,6 +20,7 @@ export function searchForPolicies({
     path,
     pageSevers,
     pagePolicies,
+    error,
   });
 
   let principalPolicy = pageManager.resolvePrincipalPolicy();
@@ -28,6 +30,7 @@ export function searchForPolicies({
       path,
       apiServers,
       apiPolicies,
+      error,
     });
     principalPolicy = apiManager.resolvePrincipalPolicy();
   }

@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/allow/server_page/allowed/+page.svelte";

@@ -1,10 +1,11 @@
 import { directoryLookup, filterKeysByRegex } from "../utils/index.js";
 
 export default class LayoutManager {
-  constructor({ path, layoutServers, layoutPolicies }) {
+  constructor({ path, layoutServers, layoutPolicies, error }) {
     this.path = path;
     this.layoutServers = layoutServers;
     this.layoutPolicies = layoutPolicies;
+    this.error = error;
   }
 
   ensureServersHavePolicies() {
@@ -18,7 +19,8 @@ export default class LayoutManager {
       )[0];
 
       if (!layoutPolicyComponent) {
-        throw new Error(
+        throw new this.error(
+          500,
           `No layout policy found for ${key}, should be ${key
             .replace("layout.server", "layout.policy")
             .replace("+", "")}`

@@ -1,7 +1,7 @@
 import { crudMap } from "../utils/index.js";
 import { replaceWithCustomPolicy } from "../utils/policyReplacer.js";
 
-export function canI({ policies, event }, wasRun) {
+export function canI({ policies, event, error }, wasRun) {
   return async ({ user, resource, action, policy }) => {
     // This is a +server or +page.server, and it has skipCanI set.
     if (policies === true) {
@@ -29,7 +29,7 @@ export function canI({ policies, event }, wasRun) {
           const result = await pol[func]();
           wasRun();
           if (!result) {
-            throw new Error(`You are not allowed to ${func} ${event.route.id}`);
+            throw new error(403, "Permission denied");
           }
         }
       }

@@ -1,18 +1,22 @@
 import { canI } from "./canI.js";
 import { searchForPolicies } from "./policySearch.js";
 
-export function handle({
-  pagePolicies,
-  pageSevers,
-  layoutPolicies,
-  layoutServers,
-  apiServers,
-  apiPolicies,
-} = {}) {
+export function handle(
+  { error } = { error: (_code, _opts) => {} },
+  {
+    pagePolicies,
+    pageSevers,
+    layoutPolicies,
+    layoutServers,
+    apiServers,
+    apiPolicies,
+  } = {}
+) {
   return async ({ event, resolve }) => {
     if (!event.route.id) {
       return await resolve(event);
     }
+
     const policies = searchForPolicies({
       path: event.route.id,
       pagePolicies,
@@ -21,6 +25,7 @@ export function handle({
       layoutPolicies,
       apiServers,
       apiPolicies,
+      error,
     });
     let ranIt = false;
 
@@ -28,22 +33,24 @@ export function handle({
       ranIt = true;
     };
 
-    event.locals.canI = canI({ policies, event }, () => (ranIt = true));
+    event.locals.canI = canI({ policies, event, error }, () => (ranIt = true));
 
     const response = await resolve(event);
 
-    const loadRoute = Object.keys(event).includes("isDataRequest");
-    const dataLoadRoute = loadRoute && event.isDataRequest;
+    const apiRoute = !!(
+      apiServers &&
+      (apiServers[`./routes${event.route.id}/+server.ts`] ||
+        apiServers[`./routes${event.route.id}/+server.js`])
+    ); //&& !dataLoadRoute;
 
-    const apiRoute =
-      !!(
-        apiServers &&
-        (apiServers[`./routes${event.route.id}/+server.ts`] ||
-          apiServers[`./routes${event.route.id}/+server.js`])
-      ) && !dataLoadRoute;
+    const serverRoute = !!(
+      pageSevers &&
+      (pageSevers[`./routes${event.route.id}/+page.server.ts`] ||
+        pageSevers[`./routes${event.route.id}/+page.server.js`])
+    ); //&& !dataLoadRoute;
 
-    if (!ranIt && (dataLoadRoute || apiRoute)) {
-      throw new Error(`Policy not ran for this route: ${event.route.id}`);
+    if (!ranIt && (apiRoute || serverRoute)) {
+      throw new error(500, `CanI not called for route ${event.route.id}`);
     }
 
     return response;

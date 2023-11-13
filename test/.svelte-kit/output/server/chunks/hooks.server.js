@@ -47,6 +47,52 @@ function replaceWithCustomPolicy(policies, policy) {
   ];
   return policies;
 }
+async function resolvePolicy({ context, system }) {
+  if (system.policy.default) {
+    return resolveKlass({
+      context,
+      system
+    });
+  }
+  return resolveFunction({
+    context,
+    system
+  });
+}
+async function resolveKlass({ context, system }) {
+  const polClass = system.policy.default;
+  if (polClass) {
+    const pol = new polClass(context);
+    if (!pol[context.action]) {
+      if (!system.key.includes("layout.policy")) {
+        throw new Error(
+          `The policy for ${context.route} does not have the "${context.action}" function.`
+        );
+      }
+    } else {
+      const result = await pol[context.action]();
+      system.wasRun();
+      if (!result) {
+        throw new system.error(403, "Permission denied");
+      }
+    }
+  }
+}
+async function resolveFunction({ context, system }) {
+  if (!system.policy[context.action]) {
+    if (!system.key.includes("layout.policy")) {
+      throw new Error(
+        `The policy for ${context.route} does not have the "${context.action}" function.`
+      );
+    }
+  } else {
+    const result = await system.policy[context.action](context);
+    system.wasRun();
+    if (!result) {
+      throw new system.error(403, "Permission denied");
+    }
+  }
+}
 function canI({ policies, event, error: error2 }, wasRun) {
   return async ({ user, resource, action, policy }) => {
     if (policies === true) {
@@ -58,24 +104,23 @@ function canI({ policies, event, error: error2 }, wasRun) {
     }
     for (let [key, policyFunc] of policies) {
       const policy2 = await policyFunc();
-      const polClass = policy2.default;
-      if (polClass) {
-        const pol = new polClass({ user, resource });
-        const func = action || crudMap[event.request.method];
-        if (!pol[func]) {
-          if (!key.includes("layout.policy")) {
-            throw new Error(
-              `The policy for ${event.route.id} does not have the "${func}" function.`
-            );
-          }
-        } else {
-          const result = await pol[func]();
-          wasRun();
-          if (!result) {
-            throw new error2(403, "Permission denied");
-          }
-        }
-      }
+      action = action || crudMap[event.request.method];
+      const context = {
+        user,
+        resource,
+        action,
+        route: event.route.id
+      };
+      const system = {
+        policy: policy2,
+        error: error2,
+        key,
+        wasRun
+      };
+      await resolvePolicy({
+        context,
+        system
+      });
     }
   };
 }
@@ -200,7 +245,8 @@ function searchForPolicies({
   const layoutManager = new LayoutManager({
     path,
     layoutServers,
-    layoutPolicies
+    layoutPolicies,
+    error: error2
   });
   layoutManager.ensureServersHavePolicies();
   return [...layoutManager.ancestorPolicies(), ...principalPolicy];
@@ -252,8 +298,8 @@ const handle = CanIKit$1.handle(
     error
   },
   {
-    pagePolicies: /* @__PURE__ */ Object.assign({ "./routes/allow/server_page/allowed/page.policy.js": () => import("./page.policy.js"), "./routes/block/server_page/not_allowed/page.policy.js": () => import("./page.policy2.js"), "./routes/block/server_page/not_called/page.policy.js": () => import("./page.policy3.js") }),
-    pageSevers: /* @__PURE__ */ Object.assign({ "./routes/allow/server_page/allowed/+page.server.js": () => import("../entries/pages/allow/server_page/allowed/_page.server.js"), "./routes/block/server_page/no_policy/+page.server.js": () => import("../entries/pages/block/server_page/no_policy/_page.server.js"), "./routes/block/server_page/not_allowed/+page.server.js": () => import("../entries/pages/block/server_page/not_allowed/_page.server.js"), "./routes/block/server_page/not_called/+page.server.js": () => import("../entries/pages/block/server_page/not_called/_page.server.js") }),
+    pagePolicies: /* @__PURE__ */ Object.assign({ "./routes/allow/server_page/allowed/functions/page.policy.js": () => import("./page.policy.js"), "./routes/allow/server_page/allowed/klass/page.policy.js": () => import("./page.policy2.js"), "./routes/block/server_page/not_allowed/functions/page.policy.js": () => import("./page.policy3.js"), "./routes/block/server_page/not_allowed/klass/page.policy.js": () => import("./page.policy4.js"), "./routes/block/server_page/not_called/functions/page.policy.js": () => import("./page.policy5.js"), "./routes/block/server_page/not_called/klass/page.policy.js": () => import("./page.policy6.js") }),
+    pageSevers: /* @__PURE__ */ Object.assign({ "./routes/allow/server_page/allowed/functions/+page.server.js": () => import("../entries/pages/allow/server_page/allowed/functions/_page.server.js"), "./routes/allow/server_page/allowed/klass/+page.server.js": () => import("../entries/pages/allow/server_page/allowed/klass/_page.server.js"), "./routes/block/server_page/no_policy/+page.server.js": () => import("../entries/pages/block/server_page/no_policy/_page.server.js"), "./routes/block/server_page/not_allowed/functions/+page.server.js": () => import("../entries/pages/block/server_page/not_allowed/functions/_page.server.js"), "./routes/block/server_page/not_allowed/klass/+page.server.js": () => import("../entries/pages/block/server_page/not_allowed/klass/_page.server.js"), "./routes/block/server_page/not_called/functions/+page.server.js": () => import("../entries/pages/block/server_page/not_called/functions/_page.server.js"), "./routes/block/server_page/not_called/klass/+page.server.js": () => import("../entries/pages/block/server_page/not_called/klass/_page.server.js") }),
     layoutPolicies: /* @__PURE__ */ Object.assign({}),
     layoutServers: /* @__PURE__ */ Object.assign({}),
     apiServers: /* @__PURE__ */ Object.assign({}),

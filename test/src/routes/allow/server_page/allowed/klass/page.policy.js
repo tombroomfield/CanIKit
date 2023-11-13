@@ -1,4 +1,4 @@
-import ParentPolicy from "../../../../lib/parent_policy.js";
+import ParentPolicy from "../../../../../lib/parent_policy";
 
 export default class Policy extends ParentPolicy {
   async view() {

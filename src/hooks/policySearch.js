@@ -39,6 +39,7 @@ export function searchForPolicies({
     path,
     layoutServers,
     layoutPolicies,
+    error,
   });
   layoutManager.ensureServersHavePolicies();
 

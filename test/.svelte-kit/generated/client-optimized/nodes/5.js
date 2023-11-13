@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/block/server_page/no_policy/+page.svelte";
+export { default as component } from "../../../../src/routes/allow/server_page/allowed/klass/+page.svelte";

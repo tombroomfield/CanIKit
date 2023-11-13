@@ -1,5 +1,6 @@
 import { crudMap } from "../utils/index.js";
 import { replaceWithCustomPolicy } from "../utils/policyReplacer.js";
+import { resolvePolicy } from "./policyResolver.js";
 
 export function canI({ policies, event, error }, wasRun) {
   return async ({ user, resource, action, policy }) => {
@@ -15,24 +16,23 @@ export function canI({ policies, event, error }, wasRun) {
 
     for (let [key, policyFunc] of policies) {
       const policy = await policyFunc();
-      const polClass = policy.default;
-      if (polClass) {
-        const pol = new polClass({ user, resource });
-        const func = action || crudMap[event.request.method];
-        if (!pol[func]) {
-          if (!key.includes("layout.policy")) {
-            throw new Error(
-              `The policy for ${event.route.id} does not have the "${func}" function.`
-            );
-          }
-        } else {
-          const result = await pol[func]();
-          wasRun();
-          if (!result) {
-            throw new error(403, "Permission denied");
-          }
-        }
-      }
+      action = action || crudMap[event.request.method];
+      const context = {
+        user,
+        resource,
+        action,
+        route: event.route.id,
+      };
+      const system = {
+        policy,
+        error,
+        key,
+        wasRun,
+      };
+      await resolvePolicy({
+        context,
+        system,
+      });
     }
   };
 }

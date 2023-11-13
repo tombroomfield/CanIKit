@@ -41,13 +41,13 @@ export function handle(
       apiServers &&
       (apiServers[`./routes${event.route.id}/+server.ts`] ||
         apiServers[`./routes${event.route.id}/+server.js`])
-    ); //&& !dataLoadRoute;
+    );
 
     const serverRoute = !!(
       pageSevers &&
       (pageSevers[`./routes${event.route.id}/+page.server.ts`] ||
         pageSevers[`./routes${event.route.id}/+page.server.js`])
-    ); //&& !dataLoadRoute;
+    );
 
     if (!ranIt && (apiRoute || serverRoute)) {
       throw new error(500, `CanI not called for route ${event.route.id}`);

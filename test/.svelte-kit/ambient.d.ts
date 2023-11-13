@@ -32,8 +32,8 @@ declare module '$env/static/private' {
 	export const TERM_PROGRAM: string;
 	export const NODE: string;
 	export const INIT_CWD: string;
-	export const GEM_HOME: string;
 	export const rvm_quiet_flag: string;
+	export const GEM_HOME: string;
 	export const rvm_gemstone_url: string;
 	export const TERM: string;
 	export const SHELL: string;
@@ -111,7 +111,6 @@ declare module '$env/static/private' {
 	export const LC_TERMINAL: string;
 	export const PLAYWRIGHT_TEST_BASE_URL: string;
 	export const rvm_ruby_bits: string;
-	export const rvm_recommended_ruby: string;
 	export const rvm_bin_flag: string;
 	export const rvm_only_path_flag: string;
 	export const RUBY_VERSION: string;
@@ -155,8 +154,8 @@ declare module '$env/dynamic/private' {
 		TERM_PROGRAM: string;
 		NODE: string;
 		INIT_CWD: string;
-		GEM_HOME: string;
 		rvm_quiet_flag: string;
+		GEM_HOME: string;
 		rvm_gemstone_url: string;
 		TERM: string;
 		SHELL: string;
@@ -234,7 +233,6 @@ declare module '$env/dynamic/private' {
 		LC_TERMINAL: string;
 		PLAYWRIGHT_TEST_BASE_URL: string;
 		rvm_ruby_bits: string;
-		rvm_recommended_ruby: string;
 		rvm_bin_flag: string;
 		rvm_only_path_flag: string;
 		RUBY_VERSION: string;

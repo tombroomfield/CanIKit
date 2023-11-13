@@ -10,7 +10,7 @@ return {
 	assets: new Set(["favicon.png"]),
 	mimeTypes: {".png":"image/png"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.922906de.js","app":"_app/immutable/entry/app.552ba867.js","imports":["_app/immutable/entry/start.922906de.js","_app/immutable/chunks/scheduler.e108d1fd.js","_app/immutable/chunks/singletons.c3cbe882.js","_app/immutable/entry/app.552ba867.js","_app/immutable/chunks/scheduler.e108d1fd.js","_app/immutable/chunks/index.a21d6cee.js"],"stylesheets":[],"fonts":[]},
+		client: {"start":"_app/immutable/entry/start.df3b7612.js","app":"_app/immutable/entry/app.22926958.js","imports":["_app/immutable/entry/start.df3b7612.js","_app/immutable/chunks/scheduler.e108d1fd.js","_app/immutable/chunks/singletons.6d9ce5ad.js","_app/immutable/entry/app.22926958.js","_app/immutable/chunks/scheduler.e108d1fd.js","_app/immutable/chunks/index.a21d6cee.js"],"stylesheets":[],"fonts":[]},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -19,7 +19,10 @@ return {
 			__memo(() => import('./nodes/4.js')),
 			__memo(() => import('./nodes/5.js')),
 			__memo(() => import('./nodes/6.js')),
-			__memo(() => import('./nodes/7.js'))
+			__memo(() => import('./nodes/7.js')),
+			__memo(() => import('./nodes/8.js')),
+			__memo(() => import('./nodes/9.js')),
+			__memo(() => import('./nodes/10.js'))
 		],
 		routes: [
 			{
@@ -37,31 +40,52 @@ return {
 				endpoint: null
 			},
 			{
-				id: "/allow/server_page/allowed",
-				pattern: /^\/allow\/server_page\/allowed\/?$/,
+				id: "/allow/server_page/allowed/functions",
+				pattern: /^\/allow\/server_page\/allowed\/functions\/?$/,
 				params: [],
 				page: { layouts: [0,], errors: [1,], leaf: 4 },
+				endpoint: null
+			},
+			{
+				id: "/allow/server_page/allowed/klass",
+				pattern: /^\/allow\/server_page\/allowed\/klass\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 5 },
 				endpoint: null
 			},
 			{
 				id: "/block/server_page/no_policy",
 				pattern: /^\/block\/server_page\/no_policy\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 5 },
-				endpoint: null
-			},
-			{
-				id: "/block/server_page/not_allowed",
-				pattern: /^\/block\/server_page\/not_allowed\/?$/,
-				params: [],
 				page: { layouts: [0,], errors: [1,], leaf: 6 },
 				endpoint: null
 			},
 			{
-				id: "/block/server_page/not_called",
-				pattern: /^\/block\/server_page\/not_called\/?$/,
+				id: "/block/server_page/not_allowed/functions",
+				pattern: /^\/block\/server_page\/not_allowed\/functions\/?$/,
 				params: [],
 				page: { layouts: [0,], errors: [1,], leaf: 7 },
+				endpoint: null
+			},
+			{
+				id: "/block/server_page/not_allowed/klass",
+				pattern: /^\/block\/server_page\/not_allowed\/klass\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 8 },
+				endpoint: null
+			},
+			{
+				id: "/block/server_page/not_called/functions",
+				pattern: /^\/block\/server_page\/not_called\/functions\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 9 },
+				endpoint: null
+			},
+			{
+				id: "/block/server_page/not_called/klass",
+				pattern: /^\/block\/server_page\/not_called\/klass\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 10 },
 				endpoint: null
 			}
 		],

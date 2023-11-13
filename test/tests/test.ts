@@ -31,29 +31,59 @@ test.describe("When visiting a page with a server page", () => {
   });
 
   test.describe("And a policy that isn't called", () => {
-    test("Then the page gives a 500 error", async ({ page }) => {
-      await page.goto("/block/server_page/not_called");
-      await expect(page.locator(".message")).toHaveText(
-        "CanI not called for route /block/server_page/not_called"
-      );
-      await expect(page.locator(".status")).toHaveText("500");
+    test.describe("When we use a class policy", () => {
+      test("Then the page gives a 500 error", async ({ page }) => {
+        await page.goto("/block/server_page/not_called/klass");
+        await expect(page.locator(".message")).toHaveText(
+          "CanI not called for route /block/server_page/not_called/klass"
+        );
+        await expect(page.locator(".status")).toHaveText("500");
+      });
+    });
+    test.describe("When we use a function policy", () => {
+      test("Then the page gives a 500 error", async ({ page }) => {
+        await page.goto("/block/server_page/not_called/functions");
+        await expect(page.locator(".message")).toHaveText(
+          "CanI not called for route /block/server_page/not_called/functions"
+        );
+        await expect(page.locator(".status")).toHaveText("500");
+      });
     });
   });
 
   test.describe("And the policy fails", () => {
-    test("Then the page gives a 403 error", async ({ page }) => {
-      await page.goto("/block/server_page/not_allowed");
-      await expect(page.locator("p")).toHaveText("Permission denied");
-      await expect(page.locator("h1")).toHaveText("403");
+    test.describe("When we use a class policy", () => {
+      test("Then the page gives a 403 error", async ({ page }) => {
+        await page.goto("/block/server_page/not_allowed/klass");
+        await expect(page.locator("p")).toHaveText("Permission denied");
+        await expect(page.locator("h1")).toHaveText("403");
+      });
+    });
+    test.describe("When we use a function policy", () => {
+      test("Then the page gives a 403 error", async ({ page }) => {
+        await page.goto("/block/server_page/not_allowed/functions");
+        await expect(page.locator("p")).toHaveText("Permission denied");
+        await expect(page.locator("h1")).toHaveText("403");
+      });
     });
   });
 
   test.describe("And the policy passes", () => {
-    test("Then page should be rendered", async ({ page }) => {
-      await page.goto("/allow/server_page/allowed");
-      await expect(page.locator("#msg")).toHaveText(
-        "LOADED - BACKEND, POLICY, ALLOWED"
-      );
+    test.describe("When we use a class policy", () => {
+      test("Then page should be rendered", async ({ page }) => {
+        await page.goto("/allow/server_page/allowed/klass");
+        await expect(page.locator("#msg")).toHaveText(
+          "LOADED - BACKEND, POLICY, ALLOWED"
+        );
+      });
+    });
+    test.describe("When we use a function policy", () => {
+      test("Then page should be rendered", async ({ page }) => {
+        await page.goto("/allow/server_page/allowed/functions");
+        await expect(page.locator("#msg")).toHaveText(
+          "LOADED - BACKEND, POLICY, ALLOWED"
+        );
+      });
     });
   });
 });

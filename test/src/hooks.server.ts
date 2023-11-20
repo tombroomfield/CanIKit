@@ -4,7 +4,6 @@ import { error } from "@sveltejs/kit";
 
 export const handle = CanIKit.handle(
   {
-    dev,
     error,
   },
   {

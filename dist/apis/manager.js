@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = require("../utils/index");
-class ApiManager {
+import { filterGlobsByRegex } from "../utils/index";
+export default class ApiManager {
     constructor({ path, apiServers, apiPolicies, error, }) {
         this.path = path;
         this.apiServers = apiServers;
@@ -19,12 +17,11 @@ class ApiManager {
     }
     findApiServer() {
         const serRegex = new RegExp(`^\\.\\/routes${this.path}\/\\+server\\.(js|ts)\\b`);
-        return Object.values((0, index_1.filterGlobsByRegex)(this.apiServers, serRegex))[0];
+        return Object.values(filterGlobsByRegex(this.apiServers, serRegex))[0];
     }
     findApiPolicy() {
         const policyRegex = new RegExp(`^\\.\\/routes${this.path}\/policy\\.(js|ts)\\b`);
-        return Object.entries((0, index_1.filterGlobsByRegex)(this.apiPolicies, policyRegex));
+        return Object.entries(filterGlobsByRegex(this.apiPolicies, policyRegex));
     }
 }
-exports.default = ApiManager;
 //# sourceMappingURL=manager.js.map

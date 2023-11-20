@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handle = void 0;
-const canI_js_1 = require("./canI.js");
-const policySearch_js_1 = require("./policySearch.js");
-function handle({ error }, { pagePolicies, pageSevers, layoutPolicies, layoutServers, apiServers, apiPolicies, }) {
+import { canI } from "./canI";
+import { searchForPolicies } from "./policySearch";
+export function handle({ error }, { pagePolicies, pageSevers, layoutPolicies, layoutServers, apiServers, apiPolicies, }) {
     return async ({ event, resolve }) => {
         if (!event.route.id) {
             return await resolve(event);
         }
-        const policies = (0, policySearch_js_1.searchForPolicies)(event.route.id, {
+        const policies = searchForPolicies(event.route.id, {
             pagePolicies,
             pageSevers,
             layoutServers,
@@ -20,7 +17,7 @@ function handle({ error }, { pagePolicies, pageSevers, layoutPolicies, layoutSer
         event.locals.skipCanI = () => {
             ranIt = true;
         };
-        event.locals.canI = (0, canI_js_1.canI)({ policies, event, error }, () => (ranIt = true));
+        event.locals.canI = canI({ policies, event, error }, () => (ranIt = true));
         const response = await resolve(event);
         const apiRoute = !!(apiServers &&
             (apiServers[`./routes${event.route.id}/+server.ts`] ||
@@ -34,5 +31,4 @@ function handle({ error }, { pagePolicies, pageSevers, layoutPolicies, layoutSer
         return response;
     };
 }
-exports.handle = handle;
 //# sourceMappingURL=index.js.map

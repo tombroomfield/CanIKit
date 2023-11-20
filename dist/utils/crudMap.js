@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.crudMap = void 0;
-exports.crudMap = {
+export const crudMap = {
     GET: "view",
     POST: "create",
     PUT: "update",

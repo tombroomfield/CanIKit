@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = require("../utils/index");
-class LayoutManager {
+import { directoryLookup, filterGlobsByRegex } from "../utils/index";
+export default class LayoutManager {
     constructor({ path, layoutServers, layoutPolicies, error, }) {
         this.path = path;
         this.layoutServers = layoutServers;
@@ -14,7 +12,7 @@ class LayoutManager {
             key = key.replace("+layout.server", "layout\\.policy");
             key = key.split(".").slice(0, -1).join(".");
             const layoutPolicyRegex = new RegExp(`^\\${key}\\.(js|ts)\\b`);
-            const layoutPolicyComponent = Object.values((0, index_1.filterGlobsByRegex)(this.layoutPolicies, layoutPolicyRegex))[0];
+            const layoutPolicyComponent = Object.values(filterGlobsByRegex(this.layoutPolicies, layoutPolicyRegex))[0];
             if (!layoutPolicyComponent) {
                 throw new this.error(500, `No layout policy found for ${key}, should be ${key
                     .replace("layout.server", "layout.policy")
@@ -23,12 +21,11 @@ class LayoutManager {
         }
     }
     ancestorPolicies() {
-        const unsorted = (0, index_1.directoryLookup)(this.path, "layout\\.policy", this.layoutPolicies);
+        const unsorted = directoryLookup(this.path, "layout\\.policy", this.layoutPolicies);
         return Object.entries(unsorted).sort((a, b) => a[0].length - b[0].length);
     }
     ancestorsServers() {
-        return (0, index_1.directoryLookup)(this.path, "\\+layout\\.server", this.layoutServers);
+        return directoryLookup(this.path, "\\+layout\\.server", this.layoutServers);
     }
 }
-exports.default = LayoutManager;
 //# sourceMappingURL=manager.js.map

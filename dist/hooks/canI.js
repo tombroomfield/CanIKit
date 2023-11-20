@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.canI = void 0;
-const index_1 = require("../utils/index");
-const policyReplacer_1 = require("../utils/policyReplacer");
-const policyResolver_1 = require("./policyResolver");
-function canI({ policies, event, error, }, wasRun) {
+import { crudMap } from "../utils/index";
+import { replaceWithCustomPolicy } from "../utils/policyReplacer";
+import { resolvePolicy } from "./policyResolver";
+export function canI({ policies, event, error, }, wasRun) {
     return async ({ user, resource, action, policy, }) => {
         // This is a +server or +page.server, and it has skipCanI set.
         if (policies === true) {
@@ -12,11 +9,11 @@ function canI({ policies, event, error, }, wasRun) {
             return;
         }
         if (policy) {
-            policies = (0, policyReplacer_1.replaceWithCustomPolicy)(policies, policy);
+            policies = replaceWithCustomPolicy(policies, policy);
         }
         for (let [key, policyFunc] of policies) {
             const policy = await policyFunc();
-            action = action || index_1.crudMap[event.request.method];
+            action = action || crudMap[event.request.method];
             const context = {
                 user,
                 resource,
@@ -29,12 +26,11 @@ function canI({ policies, event, error, }, wasRun) {
                 key,
                 wasRun,
             };
-            await (0, policyResolver_1.resolvePolicy)({
+            await resolvePolicy({
                 context,
                 system,
             });
         }
     };
 }
-exports.canI = canI;
 //# sourceMappingURL=canI.js.map

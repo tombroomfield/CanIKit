@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolvePolicy = void 0;
-async function resolvePolicy({ context, system, }) {
+export async function resolvePolicy({ context, system, }) {
     if (system.policy.default) {
         return resolveKlass({
             context,
@@ -13,7 +10,6 @@ async function resolvePolicy({ context, system, }) {
         system,
     });
 }
-exports.resolvePolicy = resolvePolicy;
 async function resolveKlass({ context, system, }) {
     const polClass = system.policy.default;
     if (polClass) {

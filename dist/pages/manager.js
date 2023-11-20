@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = require("../utils/index");
-class PageManager {
+import { filterGlobsByRegex } from "../utils/index";
+export default class PageManager {
     constructor({ path, pageSevers, pagePolicies, error, }) {
         this.path = path;
         this.pageSevers = pageSevers;
@@ -19,12 +17,11 @@ class PageManager {
     }
     findPageServer() {
         const pageSerRegex = new RegExp(`^\\.\\/routes${this.path}\/\\+(page)\\.server\\.(js|ts)\\b`);
-        return Object.values((0, index_1.filterGlobsByRegex)(this.pageSevers, pageSerRegex))[0];
+        return Object.values(filterGlobsByRegex(this.pageSevers, pageSerRegex))[0];
     }
     findPagePolicyComponent() {
         const policyRegex = new RegExp(`^\\.\\/routes${this.path}\/page\.policy\\.(js|ts)\\b`);
-        return Object.entries((0, index_1.filterGlobsByRegex)(this.pagePolicies, policyRegex));
+        return Object.entries(filterGlobsByRegex(this.pagePolicies, policyRegex));
     }
 }
-exports.default = PageManager;
 //# sourceMappingURL=manager.js.map

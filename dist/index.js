@@ -1,8 +1,7 @@
 import CanIKitPolicy from "./policies/policy";
-import { handle, handleError } from "./hooks/index";
+import { handle } from "./hooks/index";
 const CanIKit = {
     handle,
-    handleError,
 };
 export default CanIKit;
 export { CanIKitPolicy };

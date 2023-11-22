@@ -2,7 +2,6 @@ import { canI } from "./canI";
 import { ApplicationDefinition } from "../types/app";
 import { Event, HookResolve } from "../types/request";
 import { searchForPolicies } from "./policySearch";
-import { handleError } from "./error/index";
 import PermissionDeniedError from "../errors/permission_denied_error";
 import CanINotCalledError from "../errors/cani_not_called_error";
 
@@ -58,4 +57,4 @@ export function handle({
   };
 }
 
-export { handleError, PermissionDeniedError };
+export { PermissionDeniedError };

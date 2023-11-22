@@ -9,5 +9,3 @@ export const handle = CanIKit.handle({
   apiServers: import.meta.glob("./routes/**/+server.*"),
   apiPolicies: import.meta.glob("./routes/**/policy.*"),
 });
-
-export const handleError = CanIKit.handleError;

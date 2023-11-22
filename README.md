@@ -20,31 +20,24 @@ CanIKit provides a `hook` that must be set up in your hooks.server file.
 
 ```typescript
 // hooks.server.ts
-import { error } from "@sveltejs/kit";
 import CanIKit from "canikit";
 
 // ...
 
-export const handle = CanIKit.handle(
-  {
-    error,
-  },
-  {
-    pagePolicies: import.meta.glob("./routes/**/page.policy.*"),
-    pageSevers: import.meta.glob("./routes/**/+page.server.*"),
-    layoutPolicies: import.meta.glob("./routes/**/layout.policy.*"),
-    layoutServers: import.meta.glob("./routes/**/+layout.server.*"),
-    apiServers: import.meta.glob("./routes/**/+server.*"),
-    apiPolicies: import.meta.glob("./routes/**/policy.*"),
-  }
-);
+export const handle = CanIKit.handle({
+  pagePolicies: import.meta.glob("./routes/**/page.policy.*"),
+  pageSevers: import.meta.glob("./routes/**/+page.server.*"),
+  layoutPolicies: import.meta.glob("./routes/**/layout.policy.*"),
+  layoutServers: import.meta.glob("./routes/**/+layout.server.*"),
+  apiServers: import.meta.glob("./routes/**/+server.*"),
+  apiPolicies: import.meta.glob("./routes/**/policy.*"),
+});
 ```
 
 In the likely event that you are already using a hook, simply utilize the SvelteKit `sequence` function to combine the hooks.
 
 ```typescript
 // hooks.server.ts
-import { error } from "@sveltejs/kit";
 import CanIKit from "canikit";
 import { sequence } from "@sveltejs/kit/hooks";
 
@@ -52,19 +45,14 @@ import { sequence } from "@sveltejs/kit/hooks";
 
 export const handle = sequence(
   // ... other hooks,
-  CanIKit.handle(
-    {
-      error,
-    },
-    {
-      pagePolicies: import.meta.glob("./routes/**/page.policy.*"),
-      pageSevers: import.meta.glob("./routes/**/+page.server.*"),
-      layoutPolicies: import.meta.glob("./routes/**/layout.policy.*"),
-      layoutServers: import.meta.glob("./routes/**/+layout.server.*"),
-      apiServers: import.meta.glob("./routes/**/+server.*"),
-      apiPolicies: import.meta.glob("./routes/**/policy.*"),
-    }
-  )
+  CanIKit.handle({
+    pagePolicies: import.meta.glob("./routes/**/page.policy.*"),
+    pageSevers: import.meta.glob("./routes/**/+page.server.*"),
+    layoutPolicies: import.meta.glob("./routes/**/layout.policy.*"),
+    layoutServers: import.meta.glob("./routes/**/+layout.server.*"),
+    apiServers: import.meta.glob("./routes/**/+server.*"),
+    apiPolicies: import.meta.glob("./routes/**/policy.*"),
+  })
 );
 ```
 
@@ -184,7 +172,64 @@ export async function load({ request, params, locals: { canI } }) {
 }
 ```
 
-#### Custom actions
+### Handling authorization errors
+
+You should always handle authorization errors. There are two main ways to do this.
+
+The first is to add a `permissionDenied` function to your relevant policy file. This function will be called when the authorization of that policy fails. For example:
+
+```typescript
+import { error } from "@sveltejs/kit";
+export async function permissionDenied({ user, resource, action, event }) {
+  throw error(403, "Permission denied");
+}
+```
+
+Or, you might want to redirect the user to a different page:
+
+```typescript
+import { redirect } from "@sveltejs/kit";
+export async function permissionDenied({ user, resource, action, event }) {
+  return redirect("/login");
+}
+```
+
+Or in a class policy:
+
+```typescript
+import { CanIKitPolicy } from "canikit";
+import { redirect } from "@sveltejs/kit";
+export default class Policy extends CanIKitPolicy {
+  async permissionDenied() {
+    return redirect("/login");
+  }
+}
+```
+
+The second way is to catch the error when you call `canI`:
+
+```typescript
+// +page.server.ts
+export async function load({ request, params, locals: { canI } }) {
+  const user = ... // Find the user based on the request
+  const todo = ... // Find the todo based on the params
+  try {
+    await canI({ user, resource: todo, action: "update" });
+  } catch (e) {
+    if(e.name == 'PermissionDeniedError') {
+      return redirect("/login");
+    } else {
+      throw e;
+    }
+  }
+
+  // ... other code
+}
+```
+
+You should ensure that you deal with the authorization error in every case, otherwise a 500 error will be thrown.
+
+### Custom actions
 
 Feel free to add your own custom actions. For example, you may want to add a 'complete' action to the todo item policy.
 

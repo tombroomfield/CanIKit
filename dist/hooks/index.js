@@ -1,6 +1,5 @@
 import { canI } from "./canI";
 import { searchForPolicies } from "./policySearch";
-import { handleError } from "./error/index";
 import PermissionDeniedError from "../errors/permission_denied_error";
 import CanINotCalledError from "../errors/cani_not_called_error";
 export function handle({ pagePolicies, pageSevers, layoutPolicies, layoutServers, apiServers, apiPolicies, }) {
@@ -34,5 +33,5 @@ export function handle({ pagePolicies, pageSevers, layoutPolicies, layoutServers
         return response;
     };
 }
-export { handleError, PermissionDeniedError };
+export { PermissionDeniedError };
 //# sourceMappingURL=index.js.map

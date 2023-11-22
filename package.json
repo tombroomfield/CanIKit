@@ -1,12 +1,17 @@
 {
   "name": "canikit",
-  "version": "0.0.15",
+  "version": "0.0.16alpha3",
   "description": "The missing SvelteKit Authorization library!",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd test && NODE_ENV='test' npx playwright test",
+    "build": "tsc"
   },
+  "peerDependencies": {
+    "@sveltejs/kit": "1.x"
+  },
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tombroomfield/CanIKit.git"
@@ -20,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/tombroomfield/CanIKit/issues"
   },
-  "homepage": "https://github.com/tombroomfield/CanIKit#readme"
+  "homepage": "https://github.com/tombroomfield/CanIKit#readme",
+  "devDependencies": {
+    "@types/node": "^20.9.2"
+  }
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"crudMap.js","sourceRoot":"","sources":["../../src/utils/crudMap.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,OAAO,GAAG;IACrB,GAAG,EAAE,MAAM;IACX,IAAI,EAAE,QAAQ;IACd,GAAG,EAAE,QAAQ;IACb,MAAM,EAAE,QAAQ;IAChB,KAAK,EAAE,QAAQ;CAChB,CAAC"}

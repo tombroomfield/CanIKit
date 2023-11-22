@@ -13,8 +13,5 @@ export interface Event {
     canI: any;
   };
 }
-export type SvelteKitError = {
-  new (code: number, message: string): Error;
-};
 
 export type HookResolve = (event: Event) => Promise<any>;

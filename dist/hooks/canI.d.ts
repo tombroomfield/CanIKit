@@ -1,9 +1,8 @@
 import { Action, SkipFunction } from "../types/app";
-import { Event, SvelteKitError } from "../types/request";
-export declare function canI({ policies, event, error, }: {
+import { Event } from "../types/request";
+export declare function canI({ policies, event, }: {
     policies: any;
     event: Event;
-    error: SvelteKitError;
 }, wasRun: SkipFunction): ({ user, resource, action, policy, }: {
     user: any;
     resource: any;

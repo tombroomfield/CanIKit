@@ -1,6 +1,9 @@
 import { canI } from "./canI";
 import { searchForPolicies } from "./policySearch";
-export function handle({ error }, { pagePolicies, pageSevers, layoutPolicies, layoutServers, apiServers, apiPolicies, }) {
+import { handleError } from "./error/index";
+import PermissionDeniedError from "../errors/permission_denied_error";
+import CanINotCalledError from "../errors/cani_not_called_error";
+export function handle({ pagePolicies, pageSevers, layoutPolicies, layoutServers, apiServers, apiPolicies, }) {
     return async ({ event, resolve }) => {
         if (!event.route.id) {
             return await resolve(event);
@@ -12,12 +15,12 @@ export function handle({ error }, { pagePolicies, pageSevers, layoutPolicies, la
             layoutPolicies,
             apiServers,
             apiPolicies,
-        }, error);
+        });
         let ranIt = false;
         event.locals.skipCanI = () => {
             ranIt = true;
         };
-        event.locals.canI = canI({ policies, event, error }, () => (ranIt = true));
+        event.locals.canI = canI({ policies, event }, () => (ranIt = true));
         const response = await resolve(event);
         const apiRoute = !!(apiServers &&
             (apiServers[`./routes${event.route.id}/+server.ts`] ||
@@ -26,9 +29,10 @@ export function handle({ error }, { pagePolicies, pageSevers, layoutPolicies, la
             (pageSevers[`./routes${event.route.id}/+page.server.ts`] ||
                 pageSevers[`./routes${event.route.id}/+page.server.js`]));
         if (!ranIt && (apiRoute || serverRoute)) {
-            throw new error(500, `CanI not called for route ${event.route.id}`);
+            throw new CanINotCalledError(event.route.id);
         }
         return response;
     };
 }
+export { handleError, PermissionDeniedError };
 //# sourceMappingURL=index.js.map

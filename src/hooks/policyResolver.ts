@@ -1,4 +1,6 @@
 import { Context, System } from "../types/app";
+import { error } from "@sveltejs/kit";
+import PermissionDeniedError from "../errors/permission_denied_error";
 
 export async function resolvePolicy({
   context,
@@ -32,7 +34,8 @@ async function resolveKlass({
     const pol = new polClass(context);
     if (!pol[context.action]) {
       if (!system.key.includes("layout.policy")) {
-        throw new Error(
+        throw error(
+          500,
           `The policy for ${context.route} does not have the "${context.action}" function.`
         );
       }
@@ -40,7 +43,7 @@ async function resolveKlass({
       const result = await pol[context.action]();
       system.wasRun();
       if (!result) {
-        throw new system.error(403, "Permission denied");
+        throw new PermissionDeniedError(pol);
       }
     }
   }
@@ -55,7 +58,8 @@ async function resolveFunction({
 }) {
   if (!system.policy[context.action]) {
     if (!system.key.includes("layout.policy")) {
-      throw new Error(
+      throw error(
+        500,
         `The policy for ${context.route} does not have the "${context.action}" function.`
       );
     }
@@ -63,7 +67,7 @@ async function resolveFunction({
     const result = await system.policy[context.action](context);
     system.wasRun();
     if (!result) {
-      throw new system.error(403, "Permission denied");
+      throw new PermissionDeniedError(system.policy);
     }
   }
 }

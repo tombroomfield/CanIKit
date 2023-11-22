@@ -1,17 +1,17 @@
 import { filterGlobsByRegex } from "../utils/index";
+import NoPagePolicyError from "../errors/no_page_policy_error";
 export default class PageManager {
-    constructor({ path, pageSevers, pagePolicies, error, }) {
+    constructor({ path, pageSevers, pagePolicies, }) {
         this.path = path;
         this.pageSevers = pageSevers;
         this.pagePolicies = pagePolicies;
-        this.error = error;
     }
     resolvePrincipalPolicy() {
         const pageServer = this.findPageServer();
         const pagePolicy = this.findPagePolicyComponent();
         // If we have a page server, we must have a page policy.
         if (pageServer && !pagePolicy[0]) {
-            throw new this.error(500, `No page policy found for ${this.path}`);
+            throw new NoPagePolicyError(this.path);
         }
         return pagePolicy;
     }

@@ -1,5 +1,5 @@
 import { System, Context, Action, SkipFunction } from "../types/app";
-import { Event, SvelteKitError } from "../types/request";
+import { Event } from "../types/request";
 import { crudMap } from "../utils/index";
 import { replaceWithCustomPolicy } from "../utils/policyReplacer";
 import { resolvePolicy } from "./policyResolver";
@@ -8,11 +8,9 @@ export function canI(
   {
     policies,
     event,
-    error,
   }: {
     policies: any;
     event: Event;
-    error: SvelteKitError;
   },
   wasRun: SkipFunction
 ) {
@@ -49,15 +47,27 @@ export function canI(
 
       const system = {
         policy,
-        error,
         key,
         wasRun,
       } as System;
 
-      await resolvePolicy({
-        context,
-        system,
-      });
+      try {
+        await resolvePolicy({
+          context,
+          system,
+        });
+      } catch (e: any) {
+        if (e.policy && e.policy.permissionDenied) {
+          await e.policy.permissionDenied({
+            user,
+            resource,
+            action,
+            event,
+          });
+        } else {
+          throw e;
+        }
+      }
     }
   };
 }

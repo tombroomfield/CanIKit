@@ -1,36 +1,32 @@
 import { canI } from "./canI";
 import { ApplicationDefinition } from "../types/app";
-import { Event, SvelteKitError, HookResolve } from "../types/request";
+import { Event, HookResolve } from "../types/request";
 import { searchForPolicies } from "./policySearch";
+import { handleError } from "./error/index";
+import PermissionDeniedError from "../errors/permission_denied_error";
+import CanINotCalledError from "../errors/cani_not_called_error";
 
-export function handle(
-  { error }: { error: SvelteKitError },
-  {
-    pagePolicies,
-    pageSevers,
-    layoutPolicies,
-    layoutServers,
-    apiServers,
-    apiPolicies,
-  }: ApplicationDefinition
-) {
+export function handle({
+  pagePolicies,
+  pageSevers,
+  layoutPolicies,
+  layoutServers,
+  apiServers,
+  apiPolicies,
+}: ApplicationDefinition) {
   return async ({ event, resolve }: { event: Event; resolve: HookResolve }) => {
     if (!event.route.id) {
       return await resolve(event);
     }
 
-    const policies = searchForPolicies(
-      event.route.id,
-      {
-        pagePolicies,
-        pageSevers,
-        layoutServers,
-        layoutPolicies,
-        apiServers,
-        apiPolicies,
-      },
-      error
-    );
+    const policies = searchForPolicies(event.route.id, {
+      pagePolicies,
+      pageSevers,
+      layoutServers,
+      layoutPolicies,
+      apiServers,
+      apiPolicies,
+    });
 
     let ranIt = false;
 
@@ -38,7 +34,7 @@ export function handle(
       ranIt = true;
     };
 
-    event.locals.canI = canI({ policies, event, error }, () => (ranIt = true));
+    event.locals.canI = canI({ policies, event }, () => (ranIt = true));
 
     const response = await resolve(event);
 
@@ -55,9 +51,11 @@ export function handle(
     );
 
     if (!ranIt && (apiRoute || serverRoute)) {
-      throw new error(500, `CanI not called for route ${event.route.id}`);
+      throw new CanINotCalledError(event.route.id);
     }
 
     return response;
   };
 }
+
+export { handleError, PermissionDeniedError };

@@ -1,28 +1,24 @@
 import { filterGlobsByRegex } from "../utils/index";
 import { ClientGlob, ImportFunction, PolicyList } from "../types/app";
-import { SvelteKitError } from "../types/request";
+import NoPagePolicyError from "../errors/no_page_policy_error";
 
 export default class PageManager {
   path: string;
   pageSevers: ClientGlob;
   pagePolicies: ClientGlob;
-  error: SvelteKitError;
 
   constructor({
     path,
     pageSevers,
     pagePolicies,
-    error,
   }: {
     path: string;
     pageSevers: ClientGlob;
     pagePolicies: ClientGlob;
-    error: SvelteKitError;
   }) {
     this.path = path;
     this.pageSevers = pageSevers;
     this.pagePolicies = pagePolicies;
-    this.error = error;
   }
 
   resolvePrincipalPolicy(): PolicyList {
@@ -31,7 +27,7 @@ export default class PageManager {
 
     // If we have a page server, we must have a page policy.
     if (pageServer && !pagePolicy[0]) {
-      throw new this.error(500, `No page policy found for ${this.path}`);
+      throw new NoPagePolicyError(this.path);
     }
 
     return pagePolicy;

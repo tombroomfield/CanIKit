@@ -1,28 +1,24 @@
 import { filterGlobsByRegex } from "../utils/index";
 import { ClientGlob, PolicyList, ImportFunction } from "../types/app";
-import { SvelteKitError } from "../types/request";
+import { error } from "@sveltejs/kit";
 
 export default class ApiManager {
   path: string;
   apiServers: ClientGlob;
   apiPolicies: ClientGlob;
-  error: SvelteKitError;
 
   constructor({
     path,
     apiServers,
     apiPolicies,
-    error,
   }: {
     path: string;
     apiServers: ClientGlob;
     apiPolicies: ClientGlob;
-    error: SvelteKitError;
   }) {
     this.path = path;
     this.apiServers = apiServers;
     this.apiPolicies = apiPolicies;
-    this.error = error;
   }
 
   resolvePrincipalPolicy(): PolicyList {
@@ -31,7 +27,7 @@ export default class ApiManager {
 
     // If we have a page server, we must have a page policy.
     if (apiServer && !apiPolicy[0]) {
-      throw new this.error(500, `No api policy found for ${this.path}`);
+      throw error(404, `No api policy found for ${this.path}`);
     }
 
     return apiPolicy;

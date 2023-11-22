@@ -1,10 +1,10 @@
 import { directoryLookup, filterGlobsByRegex } from "../utils/index";
+import { error } from "@sveltejs/kit";
 export default class LayoutManager {
-    constructor({ path, layoutServers, layoutPolicies, error, }) {
+    constructor({ path, layoutServers, layoutPolicies, }) {
         this.path = path;
         this.layoutServers = layoutServers;
         this.layoutPolicies = layoutPolicies;
-        this.error = error;
     }
     ensureServersHavePolicies() {
         for (let key in this.ancestorsServers()) {
@@ -14,7 +14,7 @@ export default class LayoutManager {
             const layoutPolicyRegex = new RegExp(`^\\${key}\\.(js|ts)\\b`);
             const layoutPolicyComponent = Object.values(filterGlobsByRegex(this.layoutPolicies, layoutPolicyRegex))[0];
             if (!layoutPolicyComponent) {
-                throw new this.error(500, `No layout policy found for ${key}, should be ${key
+                throw error(500, `No layout policy found for ${key}, should be ${key
                     .replace("layout.server", "layout.policy")
                     .replace("+", "")}`);
             }

@@ -2,7 +2,7 @@ import LayoutManager from "../layouts/manager";
 import PageManager from "../pages/manager";
 import ApiManager from "../apis/manager";
 import { ApplicationDefinition, PolicyList } from "../types/app";
-import { SvelteKitError } from "../types/request";
+import { error } from "@sveltejs/kit";
 
 import { scrubPath } from "../utils/index";
 
@@ -15,8 +15,7 @@ export function searchForPolicies(
     layoutPolicies,
     apiServers,
     apiPolicies,
-  }: ApplicationDefinition,
-  error: SvelteKitError
+  }: ApplicationDefinition
 ): PolicyList {
   path = scrubPath(path);
 
@@ -24,7 +23,6 @@ export function searchForPolicies(
     path,
     pageSevers,
     pagePolicies,
-    error,
   });
 
   let principalPolicy = pageManager.resolvePrincipalPolicy();
@@ -34,7 +32,6 @@ export function searchForPolicies(
       path,
       apiServers,
       apiPolicies,
-      error,
     });
     principalPolicy = apiManager.resolvePrincipalPolicy();
   }
@@ -43,7 +40,6 @@ export function searchForPolicies(
     path,
     layoutServers,
     layoutPolicies,
-    error,
   });
 
   layoutManager.ensureServersHavePolicies();

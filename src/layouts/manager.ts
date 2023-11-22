@@ -1,29 +1,25 @@
 import { directoryLookup, filterGlobsByRegex } from "../utils/index";
 import { ClientGlob } from "../types/app";
-import { SvelteKitError } from "../types/request";
-import { PolicyList, PolicyFunctionsImport } from "../types/app";
+import { PolicyList } from "../types/app";
+import { error } from "@sveltejs/kit";
 
 export default class LayoutManager {
   path: string;
   layoutServers: ClientGlob;
   layoutPolicies: ClientGlob;
-  error: SvelteKitError;
 
   constructor({
     path,
     layoutServers,
     layoutPolicies,
-    error,
   }: {
     path: string;
     layoutServers: ClientGlob;
     layoutPolicies: ClientGlob;
-    error: SvelteKitError;
   }) {
     this.path = path;
     this.layoutServers = layoutServers;
     this.layoutPolicies = layoutPolicies;
-    this.error = error;
   }
 
   ensureServersHavePolicies() {
@@ -37,7 +33,7 @@ export default class LayoutManager {
       )[0];
 
       if (!layoutPolicyComponent) {
-        throw new this.error(
+        throw error(
           500,
           `No layout policy found for ${key}, should be ${key
             .replace("layout.server", "layout.policy")

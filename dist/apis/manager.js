@@ -1,17 +1,17 @@
 import { filterGlobsByRegex } from "../utils/index";
+import { error } from "@sveltejs/kit";
 export default class ApiManager {
-    constructor({ path, apiServers, apiPolicies, error, }) {
+    constructor({ path, apiServers, apiPolicies, }) {
         this.path = path;
         this.apiServers = apiServers;
         this.apiPolicies = apiPolicies;
-        this.error = error;
     }
     resolvePrincipalPolicy() {
         const apiServer = this.findApiServer();
         const apiPolicy = this.findApiPolicy();
         // If we have a page server, we must have a page policy.
         if (apiServer && !apiPolicy[0]) {
-            throw new this.error(500, `No api policy found for ${this.path}`);
+            throw error(404, `No api policy found for ${this.path}`);
         }
         return apiPolicy;
     }

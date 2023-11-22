@@ -1,8 +1,9 @@
 import { ApplicationDefinition } from "../types/app";
-import { Event, SvelteKitError, HookResolve } from "../types/request";
-export declare function handle({ error }: {
-    error: SvelteKitError;
-}, { pagePolicies, pageSevers, layoutPolicies, layoutServers, apiServers, apiPolicies, }: ApplicationDefinition): ({ event, resolve }: {
+import { Event, HookResolve } from "../types/request";
+import { handleError } from "./error/index";
+import PermissionDeniedError from "../errors/permission_denied_error";
+export declare function handle({ pagePolicies, pageSevers, layoutPolicies, layoutServers, apiServers, apiPolicies, }: ApplicationDefinition): ({ event, resolve }: {
     event: Event;
     resolve: HookResolve;
 }) => Promise<any>;
+export { handleError, PermissionDeniedError };

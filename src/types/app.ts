@@ -6,12 +6,6 @@ export type PolicyClassImport = {
   default: PolicyClass;
 };
 
-interface AnyFunction {
-  create: () => Promise<boolean>;
-}
-type RespondsToAnyFunction = {
-  (...args: any[]): any;
-};
 export type PolicyFunctionsImport = any;
 export type SkipFunction = () => void;
 export type ImportFunction = () => Promise<ImportedPolicy>;
@@ -20,7 +14,6 @@ export type ClientGlob = Record<string, ImportFunction>;
 export type PolicyList = [string, ImportFunction][];
 
 export type Action = "create" | "view" | "update" | "delete";
-import { SvelteKitError } from "./request";
 
 export interface ApplicationDefinition {
   pagePolicies: ClientGlob;
@@ -32,7 +25,6 @@ export interface ApplicationDefinition {
 }
 
 export interface System {
-  error: SvelteKitError;
   policy: PolicyClassImport | PolicyFunctionsImport;
   key: string;
   wasRun: SkipFunction;

@@ -14,7 +14,6 @@ export type ImportedPolicy = PolicyClassImport | PolicyFunctionsImport;
 export type ClientGlob = Record<string, ImportFunction>;
 export type PolicyList = [string, ImportFunction][];
 export type Action = "create" | "view" | "update" | "delete";
-import { SvelteKitError } from "./request";
 export interface ApplicationDefinition {
     pagePolicies: ClientGlob;
     pageSevers: ClientGlob;
@@ -24,7 +23,6 @@ export interface ApplicationDefinition {
     apiPolicies: ClientGlob;
 }
 export interface System {
-    error: SvelteKitError;
     policy: PolicyClassImport | PolicyFunctionsImport;
     key: string;
     wasRun: SkipFunction;

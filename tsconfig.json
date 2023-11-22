@@ -3,10 +3,11 @@
     "module": "esnext",
     "target": "ES2020",
     "outDir": "./dist",
+    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
   },
   "include": ["src"],
   "exclude": ["node_modules"]

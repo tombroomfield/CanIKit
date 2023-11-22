@@ -40,6 +40,7 @@ test.describe("When visiting a page with a server page", () => {
         await expect(page.locator(".status")).toHaveText("500");
       });
     });
+
     test.describe("When we use a function policy", () => {
       test("Then the page gives a 500 error", async ({ page }) => {
         await page.goto("/block/server_page/not_called/functions");
@@ -59,6 +60,7 @@ test.describe("When visiting a page with a server page", () => {
         await expect(page.locator("h1")).toHaveText("403");
       });
     });
+
     test.describe("When we use a function policy", () => {
       test("Then the page gives a 403 error", async ({ page }) => {
         await page.goto("/block/server_page/not_allowed/functions");
@@ -77,6 +79,7 @@ test.describe("When visiting a page with a server page", () => {
         );
       });
     });
+
     test.describe("When we use a function policy", () => {
       test("Then page should be rendered", async ({ page }) => {
         await page.goto("/allow/server_page/allowed/functions");

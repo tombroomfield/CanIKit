@@ -1,0 +1,1 @@
+<div id="msg">LOADED - BACKEND, CUSTOM POLICY, ALLOWED</div>

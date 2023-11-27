@@ -18,14 +18,14 @@ export function handle({
       return await resolve(event);
     }
 
-    const policies = searchForPolicies(event.route.id, {
-      pagePolicies,
-      pageSevers,
-      layoutServers,
-      layoutPolicies,
-      apiServers,
-      apiPolicies,
-    });
+    // const policies = searchForPolicies(event.route.id, {
+    //   pagePolicies,
+    //   pageSevers,
+    //   layoutServers,
+    //   layoutPolicies,
+    //   apiServers,
+    //   apiPolicies,
+    // });
 
     let ranIt = false;
 

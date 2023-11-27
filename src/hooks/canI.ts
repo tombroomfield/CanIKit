@@ -20,10 +20,10 @@ export function canI(
     action,
     policy,
   }: {
-    user: any;
-    resource: any;
+    user?: any;
+    resource?: any;
     action?: Action;
-    policy: any;
+    policy?: any;
   }) => {
     // This is a +server or +page.server, and it has skipCanI set.
     if (policies === true) {
@@ -33,6 +33,8 @@ export function canI(
 
     if (policy) {
       policies = replaceWithCustomPolicy(policies, policy);
+    } else {
+      policies = findEntirePolicyStack();
     }
 
     for (let [key, policyFunc] of policies) {
@@ -71,3 +73,12 @@ export function canI(
     }
   };
 }
+
+searchForPolicies(event.route.id, {
+  pagePolicies,
+  pageSevers,
+  layoutServers,
+  layoutPolicies,
+  apiServers,
+  apiPolicies,
+});

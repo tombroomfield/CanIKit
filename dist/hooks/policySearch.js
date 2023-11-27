@@ -10,7 +10,7 @@ export function searchForPolicies(path, { pagePolicies, pageSevers, layoutServer
         pagePolicies,
     });
     let principalPolicy = pageManager.resolvePrincipalPolicy();
-    if (!principalPolicy) {
+    if (!principalPolicy || principalPolicy.missing) {
         const apiManager = new ApiManager({
             path,
             apiServers,

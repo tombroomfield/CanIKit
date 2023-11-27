@@ -1,5 +1,5 @@
 import { filterGlobsByRegex } from "../utils/index";
-import NoPagePolicyError from "../errors/no_page_policy_error";
+import RequiredPagePolicy from "../policies/required_page_policy";
 export default class PageManager {
     constructor({ path, pageSevers, pagePolicies, }) {
         this.path = path;
@@ -11,7 +11,8 @@ export default class PageManager {
         const pagePolicy = this.findPagePolicyComponent();
         // If we have a page server, we must have a page policy.
         if (pageServer && !pagePolicy[0]) {
-            throw new NoPagePolicyError(this.path);
+            // throw new NoPagePolicyError(this.path);
+            return new RequiredPagePolicy(this.path);
         }
         return pagePolicy;
     }

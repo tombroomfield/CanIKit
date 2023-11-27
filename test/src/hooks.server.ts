@@ -1,5 +1,4 @@
 import CanIKit from "../../src";
-import { error } from "@sveltejs/kit";
 
 export const handle = CanIKit.handle({
   pagePolicies: import.meta.glob("./routes/**/page.policy.*"),

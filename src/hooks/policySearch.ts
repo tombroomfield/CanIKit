@@ -6,16 +6,13 @@ import { error } from "@sveltejs/kit";
 
 import { scrubPath } from "../utils/index";
 
-export function searchForPolicies(
+export function fullSearch(path: string, app: ApplicationDefinition) {
+  return [...ancestorSearch({}), ...principalSearch(path, app)];
+}
+
+function principalSearch(
   path: string,
-  {
-    pagePolicies,
-    pageSevers,
-    layoutServers,
-    layoutPolicies,
-    apiServers,
-    apiPolicies,
-  }: ApplicationDefinition
+  { pagePolicies, pageSevers, apiServers, apiPolicies }: ApplicationDefinition
 ): PolicyList {
   path = scrubPath(path);
 
@@ -36,6 +33,22 @@ export function searchForPolicies(
     principalPolicy = apiManager.resolvePrincipalPolicy();
   }
 
+  return principalPolicy;
+}
+
+export function ancestorSearch({});
+
+export function searchForPolicies(
+  path: string,
+  {
+    pagePolicies,
+    pageSevers,
+    layoutServers,
+    layoutPolicies,
+    apiServers,
+    apiPolicies,
+  }: ApplicationDefinition
+): PolicyList {
   const layoutManager = new LayoutManager({
     path,
     layoutServers,

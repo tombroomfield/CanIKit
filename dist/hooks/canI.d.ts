@@ -4,8 +4,8 @@ export declare function canI({ policies, event, }: {
     policies: any;
     event: Event;
 }, wasRun: SkipFunction): ({ user, resource, action, policy, }: {
-    user: any;
-    resource: any;
+    user?: any;
+    resource?: any;
     action?: Action | undefined;
-    policy: any;
-}) => Promise<void>;
+    policy?: any;
+}) => any;

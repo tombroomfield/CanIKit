@@ -1,1 +1,0 @@
-{"version":3,"file":"no_page_policy_error.js","sourceRoot":"","sources":["../../src/errors/no_page_policy_error.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,OAAO,iBAAkB,SAAQ,KAAK;IAClD,YAAY,IAAY;QACtB,KAAK,CAAC,4BAA4B,IAAI,EAAE,CAAC,CAAC;QAC1C,IAAI,CAAC,IAAI,GAAG,mBAAmB,CAAC;IAClC,CAAC;CACF"}

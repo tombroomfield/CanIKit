@@ -1,60 +1,22 @@
-import { canI } from "./canI";
-import { ApplicationDefinition } from "../types/app";
+import { canI } from "src/authorization";
 import { Event, HookResolve } from "../types/request";
-import { searchForPolicies } from "./policySearch";
-import PermissionDeniedError from "../errors/permission_denied_error";
-import CanINotCalledError from "../errors/cani_not_called_error";
+import { pipe } from "fp-ts/function";
 
-export function handle({
-  pagePolicies,
-  pageSevers,
-  layoutPolicies,
-  layoutServers,
-  apiServers,
-  apiPolicies,
-}: ApplicationDefinition) {
+/**
+ * Attaches a canI function to the event.locals object.
+ * @param {Event} event The event object.
+ * @param {HookResolve} resolve The resolve function.
+ * @returns {Promise<any>} The result of the resolve function.
+ */
+export function handle() {
   return async ({ event, resolve }: { event: Event; resolve: HookResolve }) => {
-    if (!event.route.id) {
-      return await resolve(event);
-    }
+    if (!event.route.id) return await resolve(event);
 
-    // const policies = searchForPolicies(event.route.id, {
-    //   pagePolicies,
-    //   pageSevers,
-    //   layoutServers,
-    //   layoutPolicies,
-    //   apiServers,
-    //   apiPolicies,
-    // });
-
-    let ranIt = false;
-
-    event.locals.skipCanI = () => {
-      ranIt = true;
-    };
-
-    event.locals.canI = canI({ policies, event }, () => (ranIt = true));
-
-    const response = await resolve(event);
-
-    const apiRoute = !!(
-      apiServers &&
-      (apiServers[`./routes${event.route.id}/+server.ts`] ||
-        apiServers[`./routes${event.route.id}/+server.js`])
+    event.locals.canI = pipe(
+      { route: event.route.id, method: event.request.method },
+      canI
     );
 
-    const serverRoute = !!(
-      pageSevers &&
-      (pageSevers[`./routes${event.route.id}/+page.server.ts`] ||
-        pageSevers[`./routes${event.route.id}/+page.server.js`])
-    );
-
-    if (!ranIt && (apiRoute || serverRoute)) {
-      throw new CanINotCalledError(event.route.id);
-    }
-
-    return response;
+    return await resolve(event);
   };
 }
-
-export { PermissionDeniedError };

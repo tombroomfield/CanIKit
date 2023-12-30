@@ -1,4 +1,4 @@
-import PermissionDeniedError from "../../../../../../../dist/errors/permission_denied_error.js";
+// import { PermissionDeniedError } from "../../../../../../../dist/index.js";
 import { error } from "@sveltejs/kit";
 
 export async function load({ locals: { canI } }) {

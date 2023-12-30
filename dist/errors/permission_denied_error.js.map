@@ -1,1 +1,0 @@
-{"version":3,"file":"permission_denied_error.js","sourceRoot":"","sources":["../../src/errors/permission_denied_error.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,OAAO,qBAAsB,SAAQ,KAAK;IAGtD,YAAY,MAAW;QACrB,KAAK,CAAC,mBAAmB,CAAC,CAAC;QAC3B,IAAI,CAAC,IAAI,GAAG,uBAAuB,CAAC;QACpC,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACvB,CAAC;CACF"}

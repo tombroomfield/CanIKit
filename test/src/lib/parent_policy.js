@@ -1,2 +1,2 @@
-import { CanIKitPolicy } from "../../../dist/index.js";
+import { CanIKitPolicy } from "../../../dist/can-i-kit.esm.js";
 export default class ParentPolicy extends CanIKitPolicy {}

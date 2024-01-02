@@ -1,1 +1,1 @@
-export declare function scrubPath(path: string): string;
+export declare function scrubPath(path: string): any;

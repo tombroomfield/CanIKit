@@ -1,9 +1,9 @@
-export default class PermissionDeniedError extends Error {
-  policy: any;
-
-  constructor(policy: any) {
-    super("Permission denied");
-    this.name = "PermissionDeniedError";
-    this.policy = policy;
+import { RequestContext } from "src/types/request";
+export default class UnhandledPermissionDeniedError extends Error {
+  constructor(request: RequestContext) {
+    super(
+      `Unhandled Permission denied for route: ${request.route} (method: ${request.method})`
+    );
+    this.name = "UnhandledPermissionDeniedError";
   }
 }

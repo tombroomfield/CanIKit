@@ -1,8 +1,11 @@
-import { ApplicationDefinition } from "../types/app";
 import { Event, HookResolve } from "../types/request";
-import PermissionDeniedError from "../errors/permission_denied_error";
-export declare function handle({ pagePolicies, pageSevers, layoutPolicies, layoutServers, apiServers, apiPolicies, }: ApplicationDefinition): ({ event, resolve }: {
+/**
+ * Attaches a canI function to the event.locals object.
+ * @param {Event} event The event object.
+ * @param {HookResolve} resolve The resolve function.
+ * @returns {Promise<any>} The result of the resolve function.
+ */
+export declare function handle(): ({ event, resolve }: {
     event: Event;
     resolve: HookResolve;
 }) => Promise<any>;
-export { PermissionDeniedError };

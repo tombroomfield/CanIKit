@@ -16,45 +16,50 @@ npm install canikit
 
 ## Setup
 
+### Add the hook
 CanIKit provides a `hook` that must be set up in your hooks.server file.
 
 ```typescript
 // hooks.server.ts
-import CanIKit from "canikit";
+import { canIKitHandle } from "canikit";
 
 // ...
 
-export const handle = CanIKit.handle({
-  pagePolicies: import.meta.glob("./routes/**/page.policy.*"),
-  pageSevers: import.meta.glob("./routes/**/+page.server.*"),
-  layoutPolicies: import.meta.glob("./routes/**/layout.policy.*"),
-  layoutServers: import.meta.glob("./routes/**/+layout.server.*"),
-  apiServers: import.meta.glob("./routes/**/+server.*"),
-  apiPolicies: import.meta.glob("./routes/**/policy.*"),
-});
+export const handle = canIKitHandle;
 ```
 
 In the likely event that you are already using a hook, simply utilize the SvelteKit `sequence` function to combine the hooks.
 
 ```typescript
 // hooks.server.ts
-import CanIKit from "canikit";
+import { canIKitHandle } from "canikit";
 import { sequence } from "@sveltejs/kit/hooks";
 
 // ...
 
 export const handle = sequence(
   // ... other hooks,
-  CanIKit.handle({
-    pagePolicies: import.meta.glob("./routes/**/page.policy.*"),
-    pageSevers: import.meta.glob("./routes/**/+page.server.*"),
-    layoutPolicies: import.meta.glob("./routes/**/layout.policy.*"),
-    layoutServers: import.meta.glob("./routes/**/+layout.server.*"),
-    apiServers: import.meta.glob("./routes/**/+server.*"),
-    apiPolicies: import.meta.glob("./routes/**/policy.*"),
-  })
+  canIKitHandle
 );
 ```
+
+### Add the vite plugin
+In order to verify that the `canI` method is called, CanIKit provides a vite plugin that must be added to your vite config.
+
+```typescript
+// vite.config.ts
+import { sveltekit } from "@sveltejs/kit/vite";
+import { canIKitPlugin } from "canikit";
+
+export default defineConfig({
+  // ... other config
+  plugins: [
+    sveltekit(),
+    canIKitPlugin()
+  ],
+});
+```
+
 
 ## Usage
 

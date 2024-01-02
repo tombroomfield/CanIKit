@@ -1,4 +1,4 @@
-export default class PermissionDeniedError extends Error {
-    policy: any;
-    constructor(policy: any);
+import { RequestContext } from "src/types/request";
+export default class UnhandledPermissionDeniedError extends Error {
+    constructor(request: RequestContext);
 }

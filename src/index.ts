@@ -1,9 +1,11 @@
-import CanIKitPolicy from "./policies/policy";
-import { handle } from "./hooks/index";
+import { Policy as CanIKitPolicy } from "./policies";
+import { handle } from "./hooks";
+import { plugin } from "./vite";
+import { CanI } from "./types";
 
-const CanIKit = {
-  handle,
+export {
+  CanIKitPolicy,
+  handle as canIKitHandle,
+  plugin as canIKitPlugin,
+  CanI,
 };
-
-export default CanIKit;
-export { CanIKitPolicy };

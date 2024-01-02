@@ -1,17 +1,16 @@
-export type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-export interface Request {
-  method: Method;
-}
-export interface Route {
-  id: string;
-}
+import { Request, Method, Route } from "@lib/types/request";
+
 export interface Event {
   request: Request;
   route: Route;
   locals: {
-    skipCanI: () => void;
     canI: any;
   };
 }
 
 export type HookResolve = (event: Event) => Promise<any>;
+
+export interface RequestContext {
+  method: Method;
+  route: string;
+}

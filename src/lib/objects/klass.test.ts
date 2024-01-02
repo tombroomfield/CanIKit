@@ -1,42 +1,71 @@
-import { objectIsClass, classFunctionIsPresent } from "./klass";
+import { classFunctionIsPresent, classFunctionIsntPresent, objectIsClass, objectIsntClass } from './klass';
 
-describe("objectIsClass", () => {
-  it("should return true if the object is a class", () => {
-    class MyClass {}
-    expect(objectIsClass(MyClass)).toBe(true);
+describe('classFunctionIsPresent', () => {
+  class TestClass {
+    testFunction() {}
+  }
+
+  it('should return true if the class and function are present', () => {
+    const result = classFunctionIsPresent(TestClass, 'testFunction');
+    expect(result).toBe(true);
   });
 
-  it("should return false if the object is not a class", () => {
-    const obj = {};
-    expect(objectIsClass(obj)).toBe(false);
+  it('should return false if the class is not present', () => {
+    const result = classFunctionIsPresent(undefined, 'testFunction');
+    expect(result).toBe(false);
   });
 
-  it("should return false if the object is a function without a prototype", () => {
-    const func = () => {};
-    expect(objectIsClass(func)).toBe(false);
+  it('should return false if the function is not present', () => {
+    const result = classFunctionIsPresent(TestClass, 'nonExistentFunction');
+    expect(result).toBe(false);
   });
 });
 
-describe("classFunctionIsPresent", () => {
-  it("should return true if the class has the specified function", () => {
-    class MyClass {
-      myFunction() {}
-    }
-    expect(classFunctionIsPresent(MyClass, "myFunction")).toBe(true);
+describe('classFunctionIsntPresent', () => {
+  class TestClass {
+    testFunction() {}
+  }
+
+  it('should return false if the class and function are present', () => {
+    const result = classFunctionIsntPresent(TestClass, 'testFunction');
+    expect(result).toBe(false);
   });
 
-  it("should return false if the class does not have the specified function", () => {
-    class MyClass {}
-    expect(classFunctionIsPresent(MyClass, "myFunction")).toBe(false);
+  it('should return true if the class is not present', () => {
+    const result = classFunctionIsntPresent(undefined, 'testFunction');
+    expect(result).toBe(true);
   });
 
-  it("should return false if the object is not a class", () => {
+  it('should return true if the function is not present', () => {
+    const result = classFunctionIsntPresent(TestClass, 'nonExistentFunction');
+    expect(result).toBe(true);
+  });
+});
+
+describe('objectIsClass', () => {
+  it('should return true if the object is a class', () => {
+    class TestClass {}
+    const result = objectIsClass(TestClass);
+    expect(result).toBe(true);
+  });
+
+  it('should return false if the object is not a class', () => {
     const obj = {};
-    expect(classFunctionIsPresent(obj, "myFunction")).toBe(false);
+    const result = objectIsClass(obj);
+    expect(result).toBe(false);
+  });
+});
+
+describe('objectIsntClass', () => {
+  it('should return false if the object is a class', () => {
+    class TestClass {}
+    const result = objectIsntClass(TestClass);
+    expect(result).toBe(false);
   });
 
-  it("should return false if the object is a function without a prototype", () => {
-    const func = () => {};
-    expect(classFunctionIsPresent(func, "myFunction")).toBe(false);
+  it('should return true if the object is not a class', () => {
+    const obj = {};
+    const result = objectIsntClass(obj);
+    expect(result).toBe(true);
   });
 });

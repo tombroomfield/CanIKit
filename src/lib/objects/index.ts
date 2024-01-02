@@ -1,3 +1,2 @@
-import { isClass } from "./klass";
-
-export { isClass };
+import { exists } from "./exists";
+export { exists };

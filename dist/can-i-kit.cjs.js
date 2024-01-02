@@ -11,31 +11,134 @@ class CanIKitPolicy {
     }
 }
 
-function present(policy) {
-    return policy && Object.keys(policy).length > 0;
-}
-function functionPresent(policy) {
-    return (functionName) => {
-        return !!(policy && policy[functionName]);
-    };
-}
-
-function functionExists(policy, functionName, route) {
-    if (functionPresent(policy)(functionName))
-        return true;
-    throw new Error(`Function "${functionName}" does not exist in the policy for the route ${route}`);
+/**
+ * Checks if an object exists (not undefined or null).
+ *
+ * @param object - The object to check.
+ * @returns True if the object exists, false otherwise.
+ */
+function exists(object) {
+    return object !== undefined && object !== null;
 }
 
 function policyExists(policy, route) {
-    if (present(policy))
+    if (exists(policy))
         return true;
+    console.log(`Policy not provided for route ${route}`, policy);
     throw new Error(`Policy not provided for route ${route}`);
 }
 
-function fireable(policy, functionName, route) {
-    policyExists(policy, route);
-    functionExists(policy, functionName, route);
+function objectIsSplatImportedModule(obj) {
+    return typeof obj === "object" && !obj.default;
+}
+function objectIsntSplatImportedModule(obj) {
+    return !objectIsSplatImportedModule(obj);
+}
+function splatImportedModuleFunctionIsPresent(obj, func) {
+    return !!(objectIsSplatImportedModule(obj) &&
+        obj[func] &&
+        typeof obj[func] === "function");
+}
+function splatImportedModuleFunctionIsntPresent(obj, func) {
+    return !splatImportedModuleFunctionIsPresent(obj, func);
+}
+
+/**
+ * Executes the specified function from the policy object.
+ * @param functionName - The name of the function to execute.
+ * @param policy - The policy object containing the function.
+ * @returns A function that takes a user and resource object and executes the specified function from the policy object.
+ */
+function splat({ functionName, policy, route }) {
+    if (objectIsntSplatImportedModule(policy))
+        return false;
+    if (splatImportedModuleFunctionIsntPresent(policy, functionName))
+        return missingSplatImportedModuleFunction(functionName, route);
     return policy[functionName];
+}
+function missingSplatImportedModuleFunction(functionName, route) {
+    throw new Error(`Unable to fire "${functionName}" from the policy for the route ${route}. The module does not have a "${functionName}" function.`);
+}
+
+function objectIsClass(obj) {
+    return typeof obj === "function" && !!obj.prototype;
+}
+function objectIsntClass(obj) {
+    return !objectIsClass(obj);
+}
+function classFunctionIsPresent(klass, func) {
+    return !!(objectIsClass(klass) && klass.prototype[func]);
+}
+function classFunctionIsntPresent(klass, func) {
+    return !classFunctionIsPresent(klass, func);
+}
+
+/**
+ * Creates a function that invokes a method on a class instance.
+ * @param functionName - The name of the method to invoke.
+ * @param policy - The class to create an instance of.
+ * @returns A function that invokes the specified method on the class instance.
+ */
+function klass({ functionName, policy, route }) {
+    if (objectIsntClass(policy))
+        return false;
+    if (classFunctionIsntPresent(policy, functionName))
+        return missingClassFunction(functionName, policy);
+    return ({ user, resource }) => {
+        const instance = new policy({ user, resource });
+        return instance[functionName]();
+    };
+}
+function missingClassFunction(functionName, route) {
+    throw new Error(`Unable to fire ${functionName} from the policy for the route ${route}. The class does not have a ${functionName} method.`);
+}
+
+function objectIsDefaultImportedModule(obj) {
+    return typeof obj === "object" && !!obj.default;
+}
+function objectIsntDefaultImportedModule(obj) {
+    return !objectIsDefaultImportedModule(obj);
+}
+function defaultImportedModuleFunctionIsPresent(obj, func) {
+    return !!(objectIsDefaultImportedModule(obj) &&
+        obj.default[func] &&
+        typeof obj.default[func] === "function");
+}
+function defaultImportedModuleFunctionIsntPresent(obj, func) {
+    return !defaultImportedModuleFunctionIsPresent(obj, func);
+}
+
+/**
+ * Retrieves the default import function from a policy object.
+ * @param functionName - The name of the function to retrieve.
+ * @param policy - The policy object.
+ * @returns The default import function if it exists, otherwise false.
+ */
+function defaultImport({ policy, functionName, route }) {
+    if (objectIsntDefaultImportedModule(policy))
+        return false;
+    if (defaultImportedModuleFunctionIsntPresent(policy, functionName))
+        return missingDefaultImportedModuleFunction(functionName, route);
+    return policy.default[functionName];
+}
+function missingDefaultImportedModuleFunction(functionName, route) {
+    throw new Error(`Unable to fire ${functionName} for the policy of the route: ${route}. The module does not have a ${functionName} function.`);
+}
+
+/**
+ * Returns a function that takes fireable policy function.
+ * @param policy - The policy object.
+ * @param functionName - The name of the function.
+ * @param route - The route.
+ * @returns A function that takes a user and resource object and returns an async policy function.
+ */
+function fireable({ policy, functionName, route }) {
+    policyExists(policy, route);
+    const fireableContext = { functionName, policy, route };
+    return klass(fireableContext) || splat(fireableContext) || defaultImport(fireableContext) || unableToFire(functionName, route);
+}
+function unableToFire(functionName, route) {
+    throw new Error(`Unable to fire ${functionName} for the policy of the route: ${route}. The policy is not a supported type.`);
 }
 
 class UnhandledPermissionDeniedError extends Error {

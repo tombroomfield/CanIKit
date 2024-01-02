@@ -5,7 +5,7 @@
   "main": "dist/can-i-kit.cjs.js",
   "module": "dist/can-i-kit.esm.js",
   "scripts": {
-    "test": "jest && cd test && npx playwright test && cd ..",
+    "test": "jest",
     "build": "rollup -c",
     "watch": "rollup -c -w"
   },

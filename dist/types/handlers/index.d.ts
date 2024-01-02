@@ -1,2 +1,4 @@
 import InvalidHandle from "./invalid_handle";
-export { InvalidHandle };
+import { OptionalFireable } from "./optional_fireable";
+import { FireableContext } from "./fireable_context";
+export { InvalidHandle, OptionalFireable, FireableContext };

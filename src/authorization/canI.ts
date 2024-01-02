@@ -32,6 +32,7 @@ export function canI(request: RequestContext) {
     /**
      * If the user isn't authorized, call the denied function if it exists, otherwise throw a PermissionDeniedError.
      */
+    
     const deniedFunction = denied || policy.denied;
     if (!deniedFunction) throw new UnhandledPermissionDeniedError(request);
     await deniedFunction({ user, resource });
